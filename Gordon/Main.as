@@ -6,7 +6,8 @@ package
 	import flash.events.Event;
 	import flash.external.ExternalInterface;
 	import flash.system.Security;
-	import flash.text.TextField;
+	import flash.text.TextField
+
 	/**
 	 * ...
 	 * @author Jami
@@ -21,13 +22,23 @@ package
 		{
             Security.allowDomain("*");
 			ExternalInterface.addCallback("addWord", receiveWords);
+			ExternalInterface.addCallback("nextRound", checkRound);
+			ExternalInterface.addCallback("changeMode", checkRound);
 			gameMenu = new GameMenu();
 			inMenu = true;
 			addChild(gameMenu);
+			//receiveWords("[[\"I\",0.8,\"\"],[\"love\",0.2,\"\"],[\"cheese\",1,\"\"],[\"!\",0,\"\"]]");
+			//receiveWords("ready");
 		}
 		
 		function receiveWords(s:String) {
-			
+		
+			//JSON.parse(s);
+			if (s == "nextRound") 
+			{
+				checkRound();
+				return;
+			}
 			switch (true) 
 			{
 				case (inMenu && gameMenu.sendWord(s)) :
@@ -44,6 +55,14 @@ package
 				default:
 			}
 			
+		}
+	
+		function checkRound()
+		{
+			if (inGame)
+			{
+				gameBoard.checkRound();
+			}
 		}
 		function receiveScore(amount:int) {
 			
