@@ -1,158 +1,71 @@
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>Gratuitous Rap Battles!</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<html>
 
-<button id="start_button" onclick="startButton(event)">
-  <img alt="Start" id="start_img" src="mic.gif">
-</button>
+    <style type="text/css" media="screen">
+    html, body { height:100%; background-color: #ffffff;}
+    body { margin:0; padding:0; overflow:hidden; }
+    #flashContent { width:100%; height:100%; }
+    </style>
 
-<div id="results">
-  <span class="final" id="final_span"></span> 
-  <span class="interim" id="interim_span"></span>
-</div>
 
-<script>
-var final_transcript = '';
-var recognizing = false;
-var ignore_onend;
-var start_timestamp;
+     <script language="JavaScript">
 
-if (!('webkitSpeechRecognition' in window)) 
-{
-  // NOT SUPPORTED
-} 
-else 
-{
-  start_button.style.display = 'inline-block';
-  var recognition = new webkitSpeechRecognition();
-  recognition.continuous = true;
-  recognition.interimResults = true;
+         function sendToActionScript(value) {
+           document.getElementById("GRB").addWord(value);
+         }
+     </script>
 
-  recognition.onstart = function() 
-  {
-    recognizing = true;
-    start_img.src = 'mic-animate.gif';
-  };
+     <script type="text/javascript" src="speech.js"></script>
 
-  recognition.onerror = function(event) 
-  {
+    <script type="text/javascript">
 
-    if (event.error == 'no-speech') 
-    {
-      start_img.src = 'mic.gif';
-      ignore_onend = true;
-    }
-
-    if (event.error == 'audio-capture') 
-    {
-      start_img.src = 'mic.gif';
-      ignore_onend = true;
-    }
-
-    if (event.error == 'not-allowed') 
-    {
-      if (event.timeStamp - start_timestamp < 100) 
+      window.onload = function()
       {
-        // blocked
-      } 
-      else 
-      {
-        // denied
+        speech.init({
+          language : "en-GB",
+          onRecognised : function(text) {
+            var words = text.split(" ");
+            for(var i in words)
+              sendToActionScript(words[i]);
+            console.log("recognised", text);
+          },
+          onReady : function() {
+            speech.start();
+          },
+          onStart : function() {
+            setTimeout(function() { 
+              speech.stop();
+            }, 3000);
+          },
+          onStop : function() {
+            speech.start();
+          }
+        });
       }
-      ignore_onend = true;
-    }
-  };
 
-  recognition.onend = function() 
-  {
-    recognizing = false;
+    </script>
 
-    if (ignore_onend) 
-    {
-      return;
-    }
+  </head>
 
-    start_img.src = 'mic.gif';
-    
-    if (!final_transcript) 
-    {
-      return;
-    }
-
-    if (window.getSelection) 
-    {
-      window.getSelection().removeAllRanges();
-      var range = document.createRange();
-      range.selectNode(document.getElementById('final_span'));
-      window.getSelection().addRange(range);
-    }
-  };
-
-  recognition.onresult = function(event) 
-  {
-    var interim_transcript = '';
-    if (typeof(event.results) == 'undefined') 
-    {
-      recognition.onend = null;
-      recognition.stop();
-      return;
-    }
-
-    for (var i = event.resultIndex; i < event.results.length; ++i) 
-    {
-      if (event.results[i].isFinal) 
-      {
-        final_transcript += event.results[i][0].transcript;
-      } 
-      else 
-      {
-        interim_transcript += event.results[i][0].transcript;
-      }
-    }
-
-    final_transcript = capitalize(final_transcript);
-    final_span.innerHTML = linebreak(final_transcript);
-    interim_span.innerHTML = linebreak(interim_transcript);
-
-    if (final_transcript || interim_transcript) 
-    {
-    }
-  };
-}
-
-var two_line = /\n\n/g;
-var one_line = /\n/g;
-function linebreak(s) {
-  return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
-}
-
-var first_char = /\S/;
-function capitalize(s) {
-  return s.replace(first_char, function(m) { return m.toUpperCase(); });
-}
-
-function startButton(event) 
-{
-  if (recognizing) 
-  {
-    recognition.stop();
-    return;
-  }
-  final_transcript = '';
-
-  recognition.lang = 'en-GB';
-
-  recognition.start();
-  ignore_onend = false;
-
-  final_span.innerHTML = '';
-  interim_span.innerHTML = '';
-
-  start_img.src = 'mic-slash.gif';
-
-  start_timestamp = event.timeStamp;
-}
-</script>
+  <body>
+ 
+    <object id="GRB"  name="GRB" 
+    type="application/x-shockwave-flash" data="Gordon/GRB.swf" width="800" height="600">
+      <param name="movie" value="Gordon/GRB.swf"/>
+      <param name="quality" value="high"/>
+      <param name="allowscriptaccess" value="always"/>
+    </object>
+ 
+     <form name="form1" onsubmit="return false;">
+         <input type="text" name="input" value="" />
+         <input type="button" value="Send" onclick="sendToActionScript(this.form.input.value);" /><br />
+     </form>
+ 
+ </body>
 
 </html>
