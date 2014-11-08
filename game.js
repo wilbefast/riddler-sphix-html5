@@ -10,6 +10,7 @@ var game = (function() {
 	var _score = 0.5;
 	var _round = 0;
 	var _player = 0;
+	var _mode = null;
 
 	var _phase = (function(){
 
@@ -53,7 +54,11 @@ var game = (function() {
       	{
       		_change("rules");
       	}
-      	else
+      	else if(text && text.indexOf("gameCredits") > -1)
+      	{
+      		_change("gameCredits")
+      	}
+    		else 
       	{
       		_speech.start();
 					_speech.flushWithDelay(3);
@@ -64,6 +69,9 @@ var game = (function() {
 		var _rules = {
 			onEnter : function(previous) {
 				_tmp.t = 0;
+				_mode = _modemanager.getRandomMode();
+				console.log("[game] === using mode " + _mode.getId() + " ===");
+				_display.setRule(_mode.getId());
 				_music.drums.play();
 			},
 			update : function(dt) {
@@ -81,7 +89,7 @@ var game = (function() {
 			onEnter : function(previous) {
 				_speech.start();
 				_speech.flushWithDelay(10);
-				_tmp.mode = _modemanager.getRandomMode();
+
 				_music.rap[_round].play();
 			},
 			onLeave : function(next) {
@@ -91,20 +99,16 @@ var game = (function() {
 			onText : function(text) {
 				if(text)
 				{
-					var wordScores = _tmp.mode.process(text);
+					var wordScores = _mode.process(text);
 					console.log(wordScores);
 
 					_change("review");
 					_display.addWordsWithScore(JSON.stringify(wordScores));
+					console.log("[game] sending JSON to display:", JSON.stringify(wordScores));
 
-					var total_score = 0;
-					for(var i in wordScores)
-						total_score += wordScores[i][1]; 
-
+					var total_score = wordScores[0];
 					_score -= (_player*2 - 1)*total_score/3;
-					if(_score < 0) score = 0;
-					if(_score > 1) score = 1;
-					//_display.setScore(_score);
+					_display.setScore(JSON.stringify([ _score, 1 - _score ]));
 	      }
 			}
 		}
@@ -125,21 +129,22 @@ var game = (function() {
 						_player = 0
 						_round++;
 					}
+					console.log("[game] player is " + player + " round is " + round);
 					if(_round >= 3)
-						_change("gameover");
+						_change("gameOver");
 					else
-						_change("handover");
+						_change("handOver");
 				}
 			},
 			onLeave : function(next) {
 				_music.review[_tmp.prev_round].pause();
 				_music.scratch.play();
-				/*_display.setRound(_round);
-				_display.setPlayer(_player);*/
+				_display.setRound(_round);
+				_display.setPlayer(_player);
 			}
 		}
 
-		var _handover = {
+		var _handOver = {
 			onEnter : function(previous) {
 				_speech.start();
 				_speech.flushWithDelay(3);
@@ -161,9 +166,11 @@ var game = (function() {
 			}
 		}
 
-		var _gameover = {
+		var _gameOver = {
 			onEnter : function(previous) {
 				_tmp.t = 0;
+			},
+			onLeave : function(next) {
 			},
 			update : function(dt) {
 				_tmp.t += dt;
@@ -172,12 +179,33 @@ var game = (function() {
 			},
 		}
 
+		var _gameCredits = {
+			onEnter : function(previous) {
+				_speech.start();
+				_speech.flushWithDelay(3);
+			},
+			onLeave : function(next) {
+			},
+			onText : function(text) {
+      	if(text && text.indexOf("ready") > -1)
+      	{
+      		_change("title");
+      	}
+      	else
+      	{
+      		_speech.start();
+					_speech.flushWithDelay(3);
+      	}
+			}
+		}
+
 		_all["title"] = _title;
 		_all["rules"] = _rules;
 		_all["rap"] = _rap;
 		_all["review"] = _review;
-		_all["handover"] = _handover;
-		_all["gameover"] = _gameover;
+		_all["handOver"] = _handOver;
+		_all["gameOver"] = _gameOver;
+		_all["gameCredits"] = _gameCredits;
 
 		function _onText(text) {
 			if(_current.onText)
