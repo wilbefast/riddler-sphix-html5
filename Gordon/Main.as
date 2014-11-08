@@ -30,6 +30,10 @@ package
 		public var console:CoolConsole;
 		public var timer:Timer;
 		public var jsonIndex:int;
+		public var actualRule:int;
+		public var actualPlayer:int;
+		public var actualRound:int;
+		
 		public function Main() 
 		{
             Security.allowDomain("*");
@@ -39,12 +43,14 @@ package
 			ExternalInterface.addCallback("addWord", receiveWords);
 			ExternalInterface.addCallback("addWordsWithScore", receiveWordsScore);
 			ExternalInterface.addCallback("setState", changeState);
-			ExternalInterface.addCallback("nextRound", checkRound);
+			ExternalInterface.addCallback("setRule", setRule);
+			ExternalInterface.addCallback("setPlayer", setPlayer);
+			ExternalInterface.addCallback("setRound", setRound);
 			
 			console.addCommand("addWord", receiveWords);
 			console.addCommand("addWordsWithScore", receiveWordsScore);
 			console.addCommand("setState", changeState);
-			console.addCommand("nextRound", checkRound)
+			
 			//receiveWordsScore("[[\"I\",0.8,\"\"],[\"love\",0.2,\"\"],[\"cheese\",1,\"\"],[\"!\",0,\"\"]]");
 			
 			//[["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""]]
@@ -78,7 +84,7 @@ package
 		{
 			json_in = JSON.parse(s);
 			jsonIndex = 0;
-			
+			timer.reset();
 			timer.delay = 10000 / json_in.length;
 			timer.repeatCount = json_in.length;
 			timer.start();
@@ -97,11 +103,15 @@ package
 					if (contains(gameMenu)) removeChild(gameMenu);
 					if (contains(gameHandOver)) removeChild(gameHandOver);
 					addChild(gameRules);
+					gameRules.setRules(actualRule);
 					inMenu = false;
 				break;
 				case "rap" :
 					if (contains(gameRules)) removeChild(gameRules);
 					addChild(gameBoard);
+					gameBoard.init();
+					gameBoard.setPlayer(actualPlayer);
+					gameBoard.setRound(actualRound);
 					inMenu = false;
 					inGame = true;
 				break;
@@ -118,14 +128,17 @@ package
 		}
 		function setPlayer(number:int)
 		{
-			
+			actualPlayer = number;
 		}
-		function checkRound()
+		
+		public function setRule(number:int):void 
 		{
-			if (inGame)
-			{
-				gameBoard.checkRound();
-			}
+			actualRule = number;
+		}
+		
+		public function setRound(number:int):void 
+		{
+			actualRound = number;
 		}
 		
 	}
