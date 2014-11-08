@@ -6,6 +6,10 @@ var game = (function() {
 	var _display;
 	var _modemanager;
 
+	var _score = 0.5;
+	var _round = 0;
+	var _player = 0;
+
 	var _phase = (function(){
 
 		var _tmp = {};
@@ -30,6 +34,9 @@ var game = (function() {
 
 		var _title = {
 			onEnter : function(previous) {
+				_score = 0.5;
+				_round = 0;
+				_player = 0;
 				_speech.start();
 				_speech.flushWithDelay(3);
 			},
@@ -72,10 +79,19 @@ var game = (function() {
 			onText : function(text) {
 				if(text)
 				{
-					console.log(_tmp.mode.process(text));
-					_display.addWordsWithScore(JSON.stringify(_tmp.mode.process(text)));
-	       	//_change("review");
-	        
+					var wordScores = _tmp.mode.process(text);
+
+					_change("review");
+					_display.addWordsWithScore(JSON.stringify(wordScores));
+
+					var total_score = 0;
+					for(var i in wordScores)
+						total_score += wordScores[i][1]; 
+
+					_score -= (_player*2 - 1)*total_score/3;
+					if(_score < 0) score = 0;
+					if(_score > 1) score = 1;
+					_display.setScore(_score);
 	      }
 			}
 		}
@@ -87,9 +103,22 @@ var game = (function() {
 			update : function(dt) {
 				_tmp.t += dt;
 				if(_tmp.t > 10)
-					_change("handover");
+				{
+					_player++;
+					if(_player >= 2)
+					{
+						_player = 0
+						_round++;
+					}
+					if(_round >= 3)
+						_change("gameover");
+					else
+						_change("handover");
+				}
 			},
 			onLeave : function(next) {
+				_display.setRound(_round);
+				_display.setPlayer(_player);
 			}
 		}
 
@@ -113,11 +142,23 @@ var game = (function() {
 			}
 		}
 
+		var _gameover = {
+			onEnter : function(previous) {
+				_tmp.t = 0;
+			},
+			update : function(dt) {
+				_tmp.t += dt;
+				if(_tmp.t > 8)
+					_change("title");
+			},
+		}
+
 		_all["title"] = _title;
 		_all["rules"] = _rules;
 		_all["rap"] = _rap;
 		_all["review"] = _review;
 		_all["handover"] = _handover;
+		_all["gameover"] = _gameover;
 
 		function _onText(text) {
 			if(_current.onText)
