@@ -36,7 +36,7 @@ package
 		
 		public function Main() 
 		{
-            Security.allowDomain("*");
+      Security.allowDomain("*");
 			console = new CoolConsole(Keyboard.F8);
 			addChild(console);
 			

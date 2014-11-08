@@ -6,13 +6,14 @@
   <head>
 
     <title>Gratuitous Rap Battles!</title>
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <style type="text/css" media="screen">
       html, body 
       { 
         height:100%; 
-        background-color: #ffffff;
+        background-color: 'black';
       }
       body 
       { 
@@ -33,7 +34,8 @@
     <script type="text/javascript" src="modes/utils.js"></script>
     <script type="text/javascript" src="modes/modemanager.js"></script>
     <script type="text/javascript" src="modes/swearmode.js"></script>
-
+    <script type="text/javascript" src="modes/phoneticmanager.js"></script>
+    <script type="text/javascript" src="modes/startingwithsoundmode.js"></script>
 
     <script type="text/javascript">
 
@@ -43,7 +45,23 @@
           display : document.getElementById("GRB"),
           speech : speech,
           modemanager : ModeManager.getInstance(),
+          music : {
+            drums : document.getElementById("drums"),
+            rap : [
+              document.getElementById("rap1"),
+              document.getElementById("rap2"),
+              document.getElementById("rap3")
+            ],
+            review : [
+              document.getElementById("review1"),
+              document.getElementById("review2"),
+              document.getElementById("review3")
+            ],
+            menu : document.getElementById("menu_music"),
+            scratch : document.getElementById("scratch")
+          }
         });
+  
       }
 
     </script>
@@ -53,7 +71,7 @@
   <body>
  
     <object id="GRB"  name="GRB" 
-    type="application/x-shockwave-flash" data="Gordon/GRB.swf" width="800" height="600">
+    type="application/x-shockwave-flash" data="Gordon/GRB.swf" width="100%" height="100%">
       <param name="movie" value="Gordon/GRB.swf"/>
       <param name="quality" value="high"/>
       <param name="allowscriptaccess" value="always"/>
@@ -63,6 +81,17 @@
          <input type="text" name="input" value="" />
          <input type="button" value="Send" onclick="document.getElementById("GRB").addWord(this.form.input.value);" />
      </form>
+
+     <audio id="drums" src="music/Drums.wav" preload="true" loop="true"/>
+    <audio id="rap1" src="music/Rap1.wav" preload="true" loop="true"/>
+    <audio id="rap2" src="music/Rap2.wav" preload="true" loop="true"/>
+    <audio id="rap3" src="music/Rap3.wav" preload="true" loop="true"/>
+    <audio id="review1" src="music/Review1.wav" preload="true" loop="true"/>
+    <audio id="review2" src="music/Review2.wav" preload="true" loop="true"/>
+    <audio id="review3" src="music/Review3.wav" preload="true" loop="true"/>
+    <audio id="menu_music" src="music/menu_music.wav" preload="true" loop="true"/>
+    <audio id="scratch" src="music/Scratch.wav" preload="true" />
+
  
  </body>
 

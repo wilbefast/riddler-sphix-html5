@@ -22,7 +22,7 @@ var PhoneticManager = (function () {
       'b':["B"],
       'c':["K"],
       'ch':["CH"],
-      'd':["D", "DH"],
+      'd':["D"],
       'f':["F"],
       'g':["G"],
       'h':["HH"],
@@ -36,7 +36,7 @@ var PhoneticManager = (function () {
       's':["S"],
       'sh':["SH"],
       't':["T"],
-      'th':["TH"],
+      'th':["TH", "DH"],
       'v':["V"],
       'w':["W"],
       'z':["Z", "ZH"]
@@ -44,32 +44,20 @@ var PhoneticManager = (function () {
     
     var _phonems = [_vowels, _consonants];
     
-    var _phoneticDictionary = {};
-    
-    var loadPhoneticDictionnary = function()
+    function getKeyFromPhonem(phonem)
     {
-      var phoneticDico = readTextFile('./data/phonetic_dico.txt');
-      var firstChar = phoneticDico.indexOf('\nA ')+1;
-      var lastChar = phoneticDico.lastIndexOf('\n{BRACE');
-      phoneticDico = phoneticDico.slice(firstChar, lastChar);
-      phoneticDico = phoneticDico.split('\n');
-      for(var i in phoneticDico)
+      for(var i in _consonants)
       {
-        var currentLine = phoneticDico[i];
-        var split = currentLine.split(/ (.+)?/);
-        var key = split[0];
-        var value;
-        if(key.match(/\(\d+\)$/))
-        {
-          key = key.split(/\(\d+\)$/)[0];
-          value = _phoneticDictionary[key];
-          value.push(split[1].trim().split(' '));
-        }
-        else
-          value = [split[1].trim().split(' ')];
-        _phoneticDictionary[key] = value;
+        if(_consonants[i].indexOf(phonem)!=-1)
+          return i;
       }
-    }();
+      for(var i in _vowels)
+      {
+        if(_vowels[i].indexOf(phonem)!=-1)
+          return i;
+      }
+      return null;
+    }
 
     return {
       evaluatePhonems:function(firstPhonem, secondPhonem)
@@ -84,12 +72,173 @@ var PhoneticManager = (function () {
     
       phonetize:function(text)
       {
-        var r = [];
-        var words = text.split(' ');
-        for(var i in words)
+      
+        var request = new XMLHttpRequest();
+        request.open("GET", "../dictionary?action=phonetize&text="+encodeURI(text), false);
+        request.send(null);
+        
+        if(request.status === 200 || request.status == 0)
         {
-          console.log(words[i]);
-          r.push(_phoneticDictionary[words[i].toUpperCase()]);
+            return JSON.parse(request.responseText);
+        }
+      },
+      
+      isVowel:function(phonem)
+      {
+        for(var key in _vowels)
+        {
+            if(_vowels[key].indexOf(phonem)!=-1)
+                 return true;
+        }
+        return false;
+      },
+      
+      isConsonant:function(phonem)
+      {
+        for(var key in _consonants)
+        {
+            if(_consonants[key].indexOf(phonem)!=-1)
+                 return true;
+        }
+        return false;
+      },
+      
+      getPhonemProximity:function(phonem1, phonem2)
+      {
+        var score = 0;
+        if(this.isVowel(phonem1)&&this.isVowel(phonem2))
+        {
+          if(phonem1.match(/[A-Za-z]*/)[0]==phonem2.match(/[A-Za-z]*/)[0])
+            return PERFECT;
+          if(phonem1[0]==phonem2[0])
+            return CLOSE;
+          var key1 = getKeyFromPhonem(phonem1);
+          var key2 = getKeyFromPhonem(phonem2);
+          if(key1==key2)
+            return CLOSE;
+          if(key1>key2)
+          {
+            var tmp = key1;
+            key1 = key2;
+            key2 = tmp;
+          }
+          if(key1=='a')
+          {
+            if(key2=='e')
+              return CLOSE;
+            if(key2=='i')
+              return AVERAGE;
+            if(key2=='o')
+              return AVERAGE;
+            return FOREIGN;
+          }
+          if(key1=='e')
+          {
+            if(key2=='i')
+              return CLOSE;
+            if(key2=='o')
+              return AVERAGE;
+            return FOREIGN;
+          }
+          return FOREIGN;
+        }
+        else if(this.isConsonant(phonem1)&&this.isConsonant(phonem2))
+        {
+          var key1 = getKeyFromPhonem(phonem1);
+          var key2 = getKeyFromPhonem(phonem2);
+          if(key1==key2)
+            return PERFECT;
+          if((['p','b','d'].indexOf(key1)!=-1)&&(['p','b','d'].indexOf(key2)!=-1))
+            return FOREIGN;
+          if((['v','Z','th'].indexOf(key1)!=-1)&&(['v','z','th'].indexOf(key2)!=-1))
+            return AVERAGE;
+          if((['ch','sh'].indexOf(key1)!=-1)&&(['ch','sh'].indexOf(key2)!=-1))
+            return AVERAGE;
+          return NULL;
+        }
+        return score;
+      },
+      
+      evaluateWordPhonemsStartingBy:function(phonems, length, wordPhonems)
+      {
+        var j = 0;
+        var score = 0;
+        var itLength = length;
+        for(var i in phonems)
+        {
+          var malus = 0;
+          var isPatternConsonant = this.isConsonant(phonems[i]);
+          
+          var isTargetConsonant;
+          
+          if(this.isConsonant(wordPhonems[j]))
+            isTargetConsonant = true;
+          else if(this.isVowel(wordPhonems[j]))
+            isTargetConsonant = false;
+        
+          while((isPatternConsonant!=isTargetConsonant)&&(j<wordPhonems.length))
+          {
+            if(_consonants['h'].indexOf(wordPhonems[j])!=-1)
+              malus+=0.5;
+            else
+              malus++;
+            j++;
+            
+            if(this.isConsonant(wordPhonems[j]))
+              isTargetConsonant = true;
+            else if(this.isVowel(wordPhonems[j]))
+              isTargetConsonant = false;
+          }
+          score+=(itLength--)*this.getPhonemProximity(phonems[i], wordPhonems[j])/(malus+1);
+          j++;
+        }
+        return score/(length*(length+1)/2);
+      },
+      
+      evaluateTextStartingBy:function(phonems, length, text)
+      {
+        var r = [0];
+        var wordsArray = [];
+        var score = 0;
+        var nbWords = 0;
+        var usedWords ={};
+        var phonetized = this.phonetize(text);
+        var splitText = text.split(' ');
+        for(var i in phonetized)
+        {
+          var wordScore = 0;
+          var wordPhonems = phonetized[i];
+          for(var j in wordPhonems)
+          {
+            var phonetic = wordPhonems[j];
+            wordScore = Math.max(wordScore, this.evaluateWordPhonemsStartingBy(phonems, length, phonetic));
+          }
+          if(wordScore>0)
+          {
+            var word = splitText[i];
+            var nbUse = usedWords[word];
+            if((nbUse!=undefined)&&(nbUse>1))
+            {
+              var pow2 = 2^nbUse;
+              wordScore/=pow2;
+              usedWords[word] = ++nbUse;
+              nbWords+=1/(pow2);
+            }
+            else
+            {
+              usedWords[word] = 1;
+              nbWords++;
+            }
+            score+=wordScore;
+          }
+          wordsArray.push([word,wordScore]);
+        }
+        
+        var finalScore = (10-10/(nbWords/10+1))/10;
+        r[0] = finalScore;
+        for(var i in wordsArray)
+        {
+          r.push([wordsArray[i][0],finalScore*wordsArray[i][1]/nbWords,""]);
         }
         return r;
       }
