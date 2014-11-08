@@ -24,7 +24,7 @@ Repeated words score less points";
           if(words[i].indexOf('*')!=-1)
             swearwords.push(words[i]);
         }
-        var result = [];
+        var result = [0];
         var swearwordsScore = [];
         
         swearCount = 0;
@@ -45,7 +45,7 @@ Repeated words score less points";
           }
         }
         var finalScore = (10-10/(swearCount/10+1))/10;
-        
+        result[0]=finalScore;
         var swearIndex = 0;
         for(var i in words)
         {
