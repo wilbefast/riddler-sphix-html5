@@ -38,7 +38,10 @@ package
 			addEventListener(Event.ENTER_FRAME, update);
 			checkRound();
 		}
-		
+		public function init():void 
+		{
+			subString.text = "";
+		}
 		public function checkRound():void 
 		{
 			roundText.text = String(round);
@@ -79,7 +82,7 @@ package
 			shake = true;
 			tempo = 20;
 		}
-		public function sendWord(str:String):void 
+		public function sendWord(str:String,score:Number):void 
 		{
 			subString.appendText(str+" ");
 			var theText:BattleText = new BattleText();
@@ -88,8 +91,8 @@ package
 			theText.y = actualplayer.y;
 			addChild(theText);
 			actualplayer.talk();
-			TweenMax.to(theText, 0.8, { x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); removeChild(theText); } } );
-		
+			theText.rotation = Math.random() * 360;
+			TweenMax.to(theText, Math.random(), { scaleX: theText.scaleX + score, scaleY: theText.scaleY + score, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); removeChild(theText); } } );
 		}
 	}
 

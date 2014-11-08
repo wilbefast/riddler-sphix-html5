@@ -4,9 +4,12 @@ package
 	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
 	import flash.system.Security;
 	import flash.text.TextField
+	import flash.ui.Keyboard;
+	import flash.utils.Timer;
 
 	/**
 	 * ...
@@ -14,57 +17,109 @@ package
 	 */
 	public class Main extends MovieClip
 	{
+		private var json_in;
+		
 		public var gameBoard:GameBoard;
 		public var gameMenu:GameMenu;
+		public var gameRules:GameRules;
+		public var gameReview:GameReview;
+		public var gameHandOver:GameHandOver;
+		
 		public var inMenu:Boolean;
 		public var inGame:Boolean;
+		public var console:CoolConsole;
+		public var timer:Timer;
+		public var jsonIndex:int;
 		public function Main() 
 		{
             Security.allowDomain("*");
+			console = new CoolConsole(Keyboard.F8);
+			addChild(console);
+			
 			ExternalInterface.addCallback("addWord", receiveWords);
+			ExternalInterface.addCallback("addWordsWithScore", receiveWordsScore);
+			ExternalInterface.addCallback("setState", changeState);
 			ExternalInterface.addCallback("nextRound", checkRound);
-			gameMenu = new GameMenu();
-			inMenu = true;
-			addChild(gameMenu);
-			//receiveWords("[[\"I\",0.8,\"\"],[\"love\",0.2,\"\"],[\"cheese\",1,\"\"],[\"!\",0,\"\"]]");
+			
+			console.addCommand("addWord", receiveWords);
+			console.addCommand("addWordsWithScore", receiveWordsScore);
+			console.addCommand("setState", changeState);
+			console.addCommand("nextRound", checkRound)
+			//receiveWordsScore("[[\"I\",0.8,\"\"],[\"love\",0.2,\"\"],[\"cheese\",1,\"\"],[\"!\",0,\"\"]]");
+			
+			//[["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""]]
 			//receiveWords("ready");
+			gameMenu = new GameMenu();
+			gameRules = new GameRules();
+			gameBoard = new GameBoard();
+			gameReview = new GameReview();
+			gameHandOver = new GameHandOver();
+			
+			timer = new Timer(0);
+			timer.addEventListener(TimerEvent.TIMER, showWords);
+		}
+		
+		private function showWords(e:TimerEvent):void 
+		{
+			gameBoard.sendWord(json_in[jsonIndex][0], json_in[jsonIndex][1]);
+			jsonIndex++;
+			
 		}
 		
 		function receiveWords(s:String) {
 		
-			//JSON.parse(s);
-			if (s == "nextRound") 
+			gameBoard.sendWord(s,0);
+		}
+		function receiveWordsScore(s:String)
+		{
+			json_in = JSON.parse(s);
+			jsonIndex = 0;
+			
+			timer.delay = 10000 / json_in.length;
+			trace(timer.delay);
+			timer.repeatCount = json_in.length;
+			timer.start();
+		}
+		function changeState(s:String)
+		{
+			switch (s)
 			{
-				checkRound();
-				return;
-			}
-			switch (true) 
-			{
-				case (inMenu && gameMenu.sendWord(s)) :
-					removeChild(gameMenu);
-					gameBoard = new GameBoard();
+				case "title" :
+					inMenu = true;
+					inGame = false;
+					addChild(gameMenu);
+				break;
+				case "rules" :
+					if (contains(gameMenu)) removeChild(gameMenu);
+					if (contains(gameHandOver)) removeChild(gameHandOver);
+					addChild(gameRules);
+					inMenu = false;
+				break;
+				case "rap" :
+					if (contains(gameRules)) removeChild(gameRules);
 					addChild(gameBoard);
 					inMenu = false;
 					inGame = true;
 				break;
-				case (inGame) :
-					gameBoard.sendWord(s);
+				case "review" :
+					if (contains(gameBoard)) removeChild(gameBoard);
+					addChild(gameReview);
+					inGame = false;
+				break;
+				case "handOver" :
+					if (contains(gameReview)) removeChild(gameReview);
+					addChild(gameHandOver);
+					
 				break;
 				
-				default:
 			}
-			
 		}
-	
 		function checkRound()
 		{
 			if (inGame)
 			{
 				gameBoard.checkRound();
 			}
-		}
-		function receiveScore(amount:int) {
-			
 		}
 		
 	}

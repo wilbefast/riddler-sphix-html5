@@ -6,14 +6,14 @@ package
 	 * ...
 	 * @author Jami
 	 */
-	public class GameMenu extends MovieClip 
+	public class GameHandOver extends MovieClip 
 	{
 		
-		public function GameMenu() 
+		public function GameHandOver() 
 		{
 			super();
-			
 		}
+		
 	}
 
 }
