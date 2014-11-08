@@ -8,9 +8,9 @@ var ModeManager = (function () {
     var _modes = {};
 
     return {
-      register: function (modeName, mode)
+      register: function (mode)
       {
-        _modes[modeName] = mode;
+        _modes[mode.getName()] = mode;
       },
       getModes: function()
       {
