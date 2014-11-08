@@ -15,7 +15,7 @@ package
 			stop();
 		}
 		
-		public function setRules(actualRule:int):void 
+		public function setRules(actualRule:String):void 
 		{
 			gotoAndStop(actualRule);
 		}
