@@ -80,7 +80,6 @@ package
 			jsonIndex = 0;
 			
 			timer.delay = 10000 / json_in.length;
-			trace(timer.delay);
 			timer.repeatCount = json_in.length;
 			timer.start();
 		}
@@ -92,6 +91,7 @@ package
 					inMenu = true;
 					inGame = false;
 					addChild(gameMenu);
+					gameMenu.gotoAndPlay(1);
 				break;
 				case "rules" :
 					if (contains(gameMenu)) removeChild(gameMenu);
@@ -101,19 +101,14 @@ package
 				break;
 				case "rap" :
 					if (contains(gameRules)) removeChild(gameRules);
-					addChild(gameBoard);
-					inMenu = false;
-					inGame = true;
+						addChild(gameBoard);
 				break;
 				case "review" :
-					if (contains(gameBoard)) removeChild(gameBoard);
-					addChild(gameReview);
-					inGame = false;
+					
 				break;
 				case "handOver" :
-					if (contains(gameReview)) removeChild(gameReview);
+					if (contains(gameBoard)) removeChild(gameBoard);
 					addChild(gameHandOver);
-					
 				break;
 				
 			}
