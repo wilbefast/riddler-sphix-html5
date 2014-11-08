@@ -23,7 +23,6 @@ package
             Security.allowDomain("*");
 			ExternalInterface.addCallback("addWord", receiveWords);
 			ExternalInterface.addCallback("nextRound", checkRound);
-			ExternalInterface.addCallback("changeMode", checkRound);
 			gameMenu = new GameMenu();
 			inMenu = true;
 			addChild(gameMenu);
