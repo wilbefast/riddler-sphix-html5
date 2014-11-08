@@ -17,12 +17,16 @@ package
 		public var subString:TextField; 
 		public var player1:Player;
 		public var player2:Player;
+		public var actualplayer:Player;
+		public var round:int;
+		public var wordDestinationX:int;
+		public var roundText:TextField;
 		
 		public function GameBoard() 
 		{
 			super();
 			addEventListener(Event.ADDED_TO_STAGE, added);
-			
+			round = 1;
 		}
 		private function added(e:Event):void 
 		{
@@ -30,7 +34,25 @@ package
 			subString = TextField(getChildByName("sub"));
 			player1 = Player(getChildByName("TheP1"));
 			player2 = Player(getChildByName("TheP2"));
-			addEventListener(Event.ENTER_FRAME,update);
+			roundText = TextField(getChildByName("roundtf"));
+			addEventListener(Event.ENTER_FRAME, update);
+			checkRound();
+		}
+		
+		public function checkRound():void 
+		{
+			roundText.text = String(round);
+			round++;
+			subString.text = "";
+			if (round % 2 == 0)
+			{
+				actualplayer = player1;
+				wordDestinationX = 700;
+			}else
+			{
+				actualplayer = player2;
+				wordDestinationX = 100;
+			}
 		}
 		private function update(e:Event):void 
 		{
@@ -62,10 +84,11 @@ package
 			subString.appendText(str+" ");
 			var theText:BattleText = new BattleText();
 			theText.setText(str);
-			theText.x = 100;
-			theText.y = 350;
+			theText.x = actualplayer.x;
+			theText.y = actualplayer.y;
 			addChild(theText);
-			TweenMax.to(theText, 0.8, { x: 700, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); removeChild(theText); } } );
+			actualplayer.talk();
+			TweenMax.to(theText, 0.8, { x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); removeChild(theText); } } );
 		
 		}
 	}
