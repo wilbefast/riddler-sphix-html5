@@ -78,4 +78,4 @@ Repeated words score less points";
 
 })();
 
-ModeManager.getInstance().register(SwearMode.getInstance());
+//ModeManager.getInstance().register(SwearMode.getInstance());

@@ -92,6 +92,7 @@ var game = (function() {
 				if(text)
 				{
 					var wordScores = _tmp.mode.process(text);
+					console.log(wordScores);
 
 					_change("review");
 					_display.addWordsWithScore(JSON.stringify(wordScores));

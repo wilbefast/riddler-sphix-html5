@@ -5,12 +5,12 @@ function StartingWithSoundMode(sounds, difficulty)
   
   this.getSounds = function()
   {
-    return _sounds;
+    return this._sounds;
   }
   
-  this.getName = function(){ return "Words starting by "+"".concat(_sounds); }
+  this.getName = function(){ return "Words starting by "+"".concat(this._sounds); }
   
-  this.getDifficulty = function(){ return _difficulty; }
+  this.getDifficulty = function(){ return this._difficulty; }
   
   this.getInstructions = function()
   {
@@ -26,3 +26,5 @@ Repeated words score less points";
 
   ModeManager.getInstance().register(this);
 }
+
+new StartingWithSoundMode(["B"], 0.7);
