@@ -57,8 +57,12 @@ package
 			
 			timer = new Timer(0);
 			timer.addEventListener(TimerEvent.TIMER, showWords);
+			loaded();
 		}
-		
+		public function loaded():void 
+		{
+			ExternalInterface.call("SWFLoaded");
+		}
 		private function showWords(e:TimerEvent):void 
 		{
 			gameBoard.sendWord(json_in[jsonIndex][0], json_in[jsonIndex][1]);
