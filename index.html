@@ -1,35 +1,71 @@
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>Gratuitous Rap Battles!</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<html>
 
-<script type="text/javascript" src="speech.js"></script>
+    <style type="text/css" media="screen">
+    html, body { height:100%; background-color: #ffffff;}
+    body { margin:0; padding:0; overflow:hidden; }
+    #flashContent { width:100%; height:100%; }
+    </style>
 
-<script type="text/javascript">
 
-  window.onload = function()
-  {
-    speech.init({
-      language : "en-GB",
-      onRecognised : function(text) {
-        console.log("recognised", text);
-      },
-      onReady : function() {
-        speech.start();
-      },
-      onStart : function() {
-        setTimeout(function() { 
-          speech.stop();
-        }, 3000);
-      },
-      onStop : function() {
-        speech.start();
+     <script language="JavaScript">
+
+         function sendToActionScript(value) {
+           document.getElementById("GRB").addWord(value);
+         }
+     </script>
+
+     <script type="text/javascript" src="speech.js"></script>
+
+    <script type="text/javascript">
+
+      window.onload = function()
+      {
+        speech.init({
+          language : "en-GB",
+          onRecognised : function(text) {
+            var words = text.split(" ");
+            for(var i in words)
+              sendToActionScript(words[i]);
+            console.log("recognised", text);
+          },
+          onReady : function() {
+            speech.start();
+          },
+          onStart : function() {
+            setTimeout(function() { 
+              speech.stop();
+            }, 3000);
+          },
+          onStop : function() {
+            speech.start();
+          }
+        });
       }
-    });
-  }
 
+    </script>
 
-  
-</script>
+  </head>
+
+  <body>
+ 
+    <object id="GRB"  name="GRB" 
+    type="application/x-shockwave-flash" data="Gordon/GRB.swf" width="800" height="600">
+      <param name="movie" value="Gordon/GRB.swf"/>
+      <param name="quality" value="high"/>
+      <param name="allowscriptaccess" value="always"/>
+    </object>
+ 
+     <form name="form1" onsubmit="return false;">
+         <input type="text" name="input" value="" />
+         <input type="button" value="Send" onclick="sendToActionScript(this.form.input.value);" /><br />
+     </form>
+ 
+ </body>
 
 </html>
