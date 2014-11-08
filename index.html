@@ -6,6 +6,7 @@
   <head>
 
     <title>Gratuitous Rap Battles!</title>
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <style type="text/css" media="screen">
@@ -27,8 +28,6 @@
       }
     </style>
 
-    <audio src="music.mp3"/>
-
     <script type="text/javascript" src="speech.js"></script>
     <script type="text/javascript" src="game.js"></script>
 
@@ -45,7 +44,22 @@
           display : document.getElementById("GRB"),
           speech : speech,
           modemanager : ModeManager.getInstance(),
+          music : {
+            drums : document.getElementById("drums"),
+            rap : [
+              document.getElementById("rap1"),
+              document.getElementById("rap2"),
+              document.getElementById("rap3")
+            ],
+            review : [
+              document.getElementById("review1"),
+              document.getElementById("review2"),
+              document.getElementById("review3")
+            ],
+            menu : document.getElementById("menu_music")
+          }
         });
+  
       }
 
     </script>
@@ -65,6 +79,16 @@
          <input type="text" name="input" value="" />
          <input type="button" value="Send" onclick="document.getElementById("GRB").addWord(this.form.input.value);" />
      </form>
+
+     <audio id="drums" src="music/Drums.wav" preload="true" loop="true"/>
+    <audio id="rap1" src="music/Rap1.wav" preload="true" loop="true"/>
+    <audio id="rap2" src="music/Rap2.wav" preload="true" loop="true"/>
+    <audio id="rap3" src="music/Rap3.wav" preload="true" loop="true"/>
+    <audio id="review1" src="music/Review1.wav" preload="true" loop="true"/>
+    <audio id="review2" src="music/Review2.wav" preload="true" loop="true"/>
+    <audio id="review3" src="music/Review3.wav" preload="true" loop="true"/>
+    <audio id="menu_music" src="music/menu_music.wav" preload="true" loop="true"/>
+
  
  </body>
 
