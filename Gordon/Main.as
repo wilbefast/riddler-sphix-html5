@@ -90,10 +90,10 @@ package
 		function receiveWordsScore(s:String)
 		{
 			json_in = JSON.parse(s);
-			jsonIndex = 0;
+			jsonIndex = 1;
 			timer.reset();
-			timer.delay = 10000 / json_in.length;
-			timer.repeatCount = json_in.length;
+			timer.delay = 10000 / json_in.length-1;
+			timer.repeatCount = json_in.length-1;
 			timer.start();
 		}
 		function changeState(s:String)
