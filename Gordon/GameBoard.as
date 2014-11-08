@@ -94,12 +94,15 @@ package
 		public function sendWord(str:String,score:Number):void 
 		{
 			var coefDir:int = 100;
+			var frame:int;
 			subString.appendText(str + " ");
 			if (iActualPlayer == 2)
 			{
 				coefDir = -100;
 			}
-			scoreBar.gotoAndStop(scoreBar.currentFrame + int(coefDir * score));
+			frame = scoreBar.currentFrame + int(coefDir * score / 3);
+			trace(frame);
+			scoreBar.gotoAndStop(frame);
 			var theText:BattleText = new BattleText();
 			theText.setText(str);
 			theText.x = actualplayer.x;

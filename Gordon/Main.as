@@ -24,13 +24,14 @@ package
 		public var gameRules:GameRules;
 		public var gameReview:GameReview;
 		public var gameHandOver:GameHandOver;
-		
+		public var gameOver:GameOver;
+		public var gameCredits:GameCredits;
 		public var inMenu:Boolean;
 		public var inGame:Boolean;
 		public var console:CoolConsole;
 		public var timer:Timer;
 		public var jsonIndex:int;
-		public var actualRule:int;
+		public var actualRule:String;
 		public var actualPlayer:int;
 		public var actualRound:int;
 		
@@ -50,7 +51,10 @@ package
 			console.addCommand("addWord", receiveWords);
 			console.addCommand("addWordsWithScore", receiveWordsScore);
 			console.addCommand("setState", changeState);
-			
+			console.addCommand("setRule", setRule);
+			console.addCommand("setPlayer", setPlayer);
+			console.addCommand("setRound", setRound);
+				
 			//receiveWordsScore("[[\"I\",0.8,\"\"],[\"love\",0.2,\"\"],[\"cheese\",1,\"\"],[\"!\",0,\"\"]]");
 			
 			//[["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""]]
@@ -60,6 +64,8 @@ package
 			gameBoard = new GameBoard();
 			gameReview = new GameReview();
 			gameHandOver = new GameHandOver();
+			gameOver = new GameOver();
+			gameCredits = new GameCredits();
 			
 			timer = new Timer(0);
 			timer.addEventListener(TimerEvent.TIMER, showWords);
@@ -73,7 +79,6 @@ package
 		{
 			gameBoard.sendWord(json_in[jsonIndex][0], json_in[jsonIndex][1]);
 			jsonIndex++;
-			
 		}
 		
 		function receiveWords(s:String) {
@@ -94,10 +99,11 @@ package
 			switch (s)
 			{
 				case "title" :
+					if (contains(gameCredits)) removeChild(gameCredits);
 					inMenu = true;
 					inGame = false;
 					addChild(gameMenu);
--					gameMenu.gotoAndPlay(1);
+					gameMenu.gotoAndPlay(1);
 				break;
 				case "rules" :
 					if (contains(gameMenu)) removeChild(gameMenu);
@@ -119,9 +125,16 @@ package
 					inGame = false;
 				break;
 				case "handOver" :
-					if (contains(gameReview)) removeChild(gameReview);
+					if (contains(gameBoard)) removeChild(gameBoard);
 					addChild(gameHandOver);
-					
+				break;
+				case "gameOver" :
+					if (contains(gameReview)) removeChild(gameReview);
+					addChild(gameOver);
+				break;
+				case "gameCredits" :
+					if (contains(gameMenu)) removeChild(gameMenu);
+					addChild(gameCredits);
 				break;
 				
 			}
@@ -131,9 +144,9 @@ package
 			actualPlayer = number;
 		}
 		
-		public function setRule(number:int):void 
+		public function setRule(s:String):void 
 		{
-			actualRule = number;
+			actualRule = s;
 		}
 		
 		public function setRound(number:int):void 
