@@ -204,6 +204,7 @@ var PhoneticManager = (function () {
         var usedWords ={};
         var phonetized = this.phonetize(text);
         var splitText = text.split(' ');
+        
         for(var i in phonetized)
         {
           var wordScore = 0;
@@ -231,7 +232,7 @@ var PhoneticManager = (function () {
             }
             score+=wordScore;
           }
-          wordsArray.push([word,wordScore]);
+          wordsArray.push([splitText[i],wordScore]);
         }
         
         var finalScore = (10-10/(nbWords/10+1))/10;
