@@ -201,9 +201,10 @@ var PhoneticManager = (function () {
         var wordsArray = [];
         var score = 0;
         var nbWords = 0;
-        var usedWords ={};
+        var usedWords =[];
         var phonetized = this.phonetize(text);
         var splitText = text.split(' ');
+        
         for(var i in phonetized)
         {
           var wordScore = 0;
@@ -217,9 +218,9 @@ var PhoneticManager = (function () {
           {
             var word = splitText[i];
             var nbUse = usedWords[word];
-            if((nbUse!=undefined)&&(nbUse>1))
+            if((nbUse!=undefined)&&(nbUse>=1))
             {
-              var pow2 = 2^nbUse;
+              var pow2 = 2^(nbUse-1);
               wordScore/=pow2;
               usedWords[word] = ++nbUse;
               nbWords+=1/(pow2);
@@ -231,7 +232,7 @@ var PhoneticManager = (function () {
             }
             score+=wordScore;
           }
-          wordsArray.push([word,wordScore]);
+          wordsArray.push([splitText[i],wordScore]);
         }
         
         var finalScore = (10-10/(nbWords/10+1))/10;
