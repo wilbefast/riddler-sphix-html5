@@ -1,7 +1,8 @@
-function StartingWithSoundMode(sounds, difficulty)
+function StartingWithSoundMode(sounds, difficulty, soundName)
 {
   this._sounds = sounds;
   this._difficulty = difficulty;
+  this._soundName = soundName;
   
   this.getSounds = function()
   {
@@ -22,9 +23,17 @@ Repeated words score less points";
   {
     return PhoneticManager.getInstance().evaluateTextStartingBy(this._sounds,this._sounds.length,text);
   }
+
+  this.getId = function()
+  {
+    return "start_sound_" + this._soundName;
+  }
   
 
   ModeManager.getInstance().register(this);
 }
 
-new StartingWithSoundMode(["B"], 0.7);
+new StartingWithSoundMode(["IH", "N"], 0.7, "in");
+new StartingWithSoundMode(["AA", "N"], 0.7, "an");
+new StartingWithSoundMode(["DH"], 0.7, "th");
+new StartingWithSoundMode(["HH", "EH"], 0.7, "he");

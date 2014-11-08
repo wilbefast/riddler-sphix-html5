@@ -10,6 +10,7 @@ var SwearMode = (function () {
     return {
       getName:function(){ return "Swear Mode"; },
       getDifficulty: function(){ return 0.4; },
+      getId : function() { return "swear"; },
       getInstructions: function()
       {
         return "You have to use as much swearing as possible !\
@@ -78,4 +79,4 @@ Repeated words score less points";
 
 })();
 
-//ModeManager.getInstance().register(SwearMode.getInstance());
+ModeManager.getInstance().register(SwearMode.getInstance());

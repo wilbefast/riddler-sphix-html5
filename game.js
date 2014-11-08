@@ -53,7 +53,11 @@ var game = (function() {
       	{
       		_change("rules");
       	}
-      	else
+      	else if(text && text.indexOf("gameCredits") > -1)
+      	{
+      		_change("gameCredits")
+      	}
+    		else 
       	{
       		_speech.start();
 					_speech.flushWithDelay(3);
@@ -82,6 +86,8 @@ var game = (function() {
 				_speech.start();
 				_speech.flushWithDelay(10);
 				_tmp.mode = _modemanager.getRandomMode();
+				console.log("[game] === using mode " + _tmp.mode.getId() + " ===");
+				_display.setRule(_tmp.mode.getId());
 				_music.rap[_round].play();
 			},
 			onLeave : function(next) {
@@ -126,20 +132,20 @@ var game = (function() {
 						_round++;
 					}
 					if(_round >= 3)
-						_change("gameover");
+						_change("gameOver");
 					else
-						_change("handover");
+						_change("handOver");
 				}
 			},
 			onLeave : function(next) {
 				_music.review[_tmp.prev_round].pause();
 				_music.scratch.play();
-				/*_display.setRound(_round);
-				_display.setPlayer(_player);*/
+				_display.setRound(_round);
+				_display.setPlayer(_player);
 			}
 		}
 
-		var _handover = {
+		var _handOver = {
 			onEnter : function(previous) {
 				_speech.start();
 				_speech.flushWithDelay(3);
@@ -161,9 +167,11 @@ var game = (function() {
 			}
 		}
 
-		var _gameover = {
+		var _gameOver = {
 			onEnter : function(previous) {
 				_tmp.t = 0;
+			},
+			onLeave : function(next) {
 			},
 			update : function(dt) {
 				_tmp.t += dt;
@@ -172,12 +180,33 @@ var game = (function() {
 			},
 		}
 
+		var _gameCredits = {
+			onEnter : function(previous) {
+				_speech.start();
+				_speech.flushWithDelay(3);
+			},
+			onLeave : function(next) {
+			},
+			onText : function(text) {
+      	if(text && text.indexOf("ready") > -1)
+      	{
+      		_change("title");
+      	}
+      	else
+      	{
+      		_speech.start();
+					_speech.flushWithDelay(3);
+      	}
+			}
+		}
+
 		_all["title"] = _title;
 		_all["rules"] = _rules;
 		_all["rap"] = _rap;
 		_all["review"] = _review;
-		_all["handover"] = _handover;
-		_all["gameover"] = _gameover;
+		_all["handOver"] = _handOver;
+		_all["gameOver"] = _gameOver;
+		_all["gameCredits"] = _gameCredits;
 
 		function _onText(text) {
 			if(_current.onText)
