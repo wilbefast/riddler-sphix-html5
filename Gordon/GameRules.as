@@ -12,6 +12,12 @@ package
 		public function GameRules() 
 		{
 			super();
+			stop();
+		}
+		
+		public function setRules(actualRule:int):void 
+		{
+			gotoAndStop(actualRule);
 		}
 		
 	}

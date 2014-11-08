@@ -29,7 +29,6 @@ package
 		public function CoolConsole(openKey:int)
 		{
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			
 			_shared = SharedObject.getLocal("history");
 			
 			_openKey = openKey;
@@ -131,6 +130,8 @@ package
 		{
 			if (!_showing)
 			{
+				
+				parent.setChildIndex(this, parent.numChildren-1);
 				_showing = true;
 				makeConsoleVisible();
 				stage.focus = _inputField;
