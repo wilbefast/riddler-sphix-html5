@@ -20,9 +20,11 @@ var game = (function() {
 			}
 			if(_current)
 				_current.onLeave(next);
-			next.onEnter(_current);
 			_tmp = {};
+			next.onEnter(_current);
 			_current = next;
+
+			// FIXME
 			//_display.setPhase(next);
 		}
 
@@ -35,7 +37,10 @@ var game = (function() {
 			},
 			onText : function(text) {
       	if(text && text.indexOf("rap battle") > -1)
-      		_change("rap"); // FIXME
+      	{
+      		_display.addWord("ready"); // FIXME
+      		_change("rules");
+      	}
       	else
       	{
       		_speech.start();
@@ -53,6 +58,12 @@ var game = (function() {
 
 		var _rules = {
 			onEnter : function(previous) {
+				_tmp.t = 0;
+			},
+			update : function(dt) {
+				_tmp.t += dt;
+				if(_tmp.t > 5)
+					_change("rap");
 			},
 			onLeave : function(next) {
 			},
@@ -101,11 +112,22 @@ var game = (function() {
 				_current.onText(text);
 		}
 
+		function _update(dt) {
+			if(_current.update)
+				_current.update(dt);
+		}
+
 		return {
 			changeTo : _change,
-			onText : _onText
+			onText : _onText,
+			update : _update
 		}
 	})();
+
+	function _update(dt)
+	{
+		_phase.update(dt);
+	}
 
 	function _init(settings)
 	{
@@ -120,6 +142,13 @@ var game = (function() {
 			{
 				console.log("[game] all modules loaded");
 				_phase.changeTo("title");
+
+				var prev_t = (new Date()).getTime();
+				setInterval(function(){
+					var curr_t = (new Date()).getTime();
+					_update((curr_t - prev_t)/1000);
+					prev_t = curr_t;
+				}, 1000/60);
 			}
 		}
 

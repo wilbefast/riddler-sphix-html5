@@ -40,6 +40,9 @@
         });
       }
 
+
+      var d = document.getElementById("GRB");
+
     </script>
 
   </head>
@@ -55,7 +58,7 @@
  
      <form name="form1" onsubmit="return false;">
          <input type="text" name="input" value="" />
-         <input type="button" value="Send" onclick="sendToActionScript(this.form.input.value);" />
+         <input type="button" value="Send" onclick="d.addWord(this.form.input.value);" />
      </form>
  
  </body>
