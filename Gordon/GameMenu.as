@@ -1,9 +1,6 @@
 package  
 {
-	import com.greensock.easing.Bounce;
-	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
-	import flash.events.Event;
 	
 	/**
 	 * ...
@@ -11,9 +8,11 @@ package
 	 */
 	public class GameMenu extends MovieClip 
 	{
+		
 		public function GameMenu() 
 		{
 			super();
+			
 		}
 	}
 

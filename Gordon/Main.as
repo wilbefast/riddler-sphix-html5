@@ -91,7 +91,7 @@ package
 					inMenu = true;
 					inGame = false;
 					addChild(gameMenu);
-					gameMenu.gotoAndPlay(1);
+-					gameMenu.gotoAndPlay(1);
 				break;
 				case "rules" :
 					if (contains(gameMenu)) removeChild(gameMenu);
@@ -101,17 +101,24 @@ package
 				break;
 				case "rap" :
 					if (contains(gameRules)) removeChild(gameRules);
-						addChild(gameBoard);
+					addChild(gameBoard);
+					inMenu = false;
+					inGame = true;
 				break;
 				case "review" :
-					
+					inGame = false;
 				break;
 				case "handOver" :
-					if (contains(gameBoard)) removeChild(gameBoard);
+					if (contains(gameReview)) removeChild(gameReview);
 					addChild(gameHandOver);
+					
 				break;
 				
 			}
+		}
+		function setPlayer(number:int)
+		{
+			
 		}
 		function checkRound()
 		{
