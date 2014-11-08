@@ -47,6 +47,7 @@ package
 			ExternalInterface.addCallback("setRule", setRule);
 			ExternalInterface.addCallback("setPlayer", setPlayer);
 			ExternalInterface.addCallback("setRound", setRound);
+			ExternalInterface.addCallback("setScore", setScore);
 			
 			console.addCommand("addWord", receiveWords);
 			console.addCommand("addWordsWithScore", receiveWordsScore);
@@ -54,6 +55,7 @@ package
 			console.addCommand("setRule", setRule);
 			console.addCommand("setPlayer", setPlayer);
 			console.addCommand("setRound", setRound);
+			console.addCommand("setScore", setScore);
 				
 			//receiveWordsScore("[[\"I\",0.8,\"\"],[\"love\",0.2,\"\"],[\"cheese\",1,\"\"],[\"!\",0,\"\"]]");
 			
@@ -100,6 +102,7 @@ package
 			{
 				case "title" :
 					if (contains(gameCredits)) removeChild(gameCredits);
+					if (contains(gameOver)) removeChild(gameOver);
 					inMenu = true;
 					inGame = false;
 					addChild(gameMenu);
@@ -129,7 +132,7 @@ package
 					addChild(gameHandOver);
 				break;
 				case "gameOver" :
-					if (contains(gameReview)) removeChild(gameReview);
+					if (contains(gameBoard)) removeChild(gameBoard);
 					addChild(gameOver);
 				break;
 				case "gameCredits" :
@@ -139,9 +142,14 @@ package
 				
 			}
 		}
+		function setScore(s:String)
+		{
+			var json_score = JSON.parse(s);
+			gameOver.setPlayerScore(json_score[0], json_score[1]);
+		}
 		function setPlayer(number:int)
 		{
-			actualPlayer = number;
+			actualPlayer = number+1;
 		}
 		
 		public function setRule(s:String):void 
