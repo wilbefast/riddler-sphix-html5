@@ -46,6 +46,7 @@ var game = (function() {
 			},
 			onLeave : function(next) {
 				_music.menu.pause();
+				_music.scratch.play();
 			},
 			onText : function(text) {
       	if(text && text.indexOf("rap battle") > -1)
@@ -72,6 +73,7 @@ var game = (function() {
 			},
 			onLeave : function(next) {
 				_music.drums.pause();
+				_music.scratch.play();
 			},
 		}
 
@@ -84,6 +86,7 @@ var game = (function() {
 			},
 			onLeave : function(next) {
 				_music.rap[_round].pause();
+				_music.scratch.play();
 			},
 			onText : function(text) {
 				if(text)
@@ -129,6 +132,7 @@ var game = (function() {
 			},
 			onLeave : function(next) {
 				_music.review[_tmp.prev_round].pause();
+				_music.scratch.play();
 				/*_display.setRound(_round);
 				_display.setPlayer(_player);*/
 			}
@@ -138,8 +142,10 @@ var game = (function() {
 			onEnter : function(previous) {
 				_speech.start();
 				_speech.flushWithDelay(3);
+				_music.drums.play();
 			},
 			onLeave : function(next) {
+				_music.scratch.play();
 			},
 			onText : function(text) {
       	if(text && text.indexOf("ready") > -1)
