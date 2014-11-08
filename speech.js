@@ -16,7 +16,8 @@ var speech = (function() {
 	  {
 	    console.log("[speech] recognition started");
 
-	    settings.onStart();
+	    if(settings.onStart)
+	    	settings.onStart();
 	  };
 
 	  _recognition.onerror = function(event) 
@@ -32,10 +33,13 @@ var speech = (function() {
 	  		settings.onRecognised(_full_transcript);
 	  	else if(_draft_transcript != "")
 	  		settings.onRecognised(_draft_transcript);
+	  	else
+	  		settings.onRecognised(null);
 	  	_full_transcript = "";
 	  	_draft_transcript = "";
 
-	  	settings.onStop();
+	  	if(settings.onStop)
+	  		settings.onStop();
 	  };
 
 	  _recognition.onresult = function(event) 
@@ -68,13 +72,26 @@ var speech = (function() {
 		console.log("[speech] stopping recognition");
 		
 		_recognition.stop();
+		_flushing = false;
 	}
 
+	var _flushing = false;
+	function _flushWithDelay(delay)
+	{
+		if(_flushing)
+			return;
+		_flushing = true;
+		setTimeout(function()
+		{
+			_stop();
+			_flushing = false;
+		}, 1000*(delay || 0));
+	}
 
 	return {
 		init : _init,
 		start : _start,
-		stop : _stop
-
+		stop : _stop,
+		flushWithDelay : _flushWithDelay
 	}
 })();

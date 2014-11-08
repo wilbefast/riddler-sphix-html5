@@ -28,34 +28,20 @@
     </style>
 
     <script type="text/javascript" src="speech.js"></script>
+    <script type="text/javascript" src="game.js"></script>
 
     <script type="text/javascript">
 
       window.onload = function()
       {
-        var display = document.getElementById("GRB");
-
-        speech.init({
-          language : "en-GB",
-          onRecognised : function(text) {
-            var words = text.split(" ");
-            for(var i in words)
-              display.addWord(words[i]);
-            console.log("recognised", text);
-          },
-          onReady : function() {
-            speech.start();
-          },
-          onStart : function() {
-            setTimeout(function() { 
-              speech.stop();
-            }, 3000);
-          },
-          onStop : function() {
-            speech.start();
-          }
+        game.init({
+          display : document.getElementById("GRB"),
+          speech : speech,
         });
       }
+
+
+      var d = document.getElementById("GRB");
 
     </script>
 
@@ -72,7 +58,7 @@
  
      <form name="form1" onsubmit="return false;">
          <input type="text" name="input" value="" />
-         <input type="button" value="Send" onclick="sendToActionScript(this.form.input.value);" />
+         <input type="button" value="Send" onclick="d.addWord(this.form.input.value);" />
      </form>
  
  </body>
