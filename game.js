@@ -4,6 +4,7 @@ var game = (function() {
 
 	var _speech;
 	var _display;
+	var _modemanager;
 
 	var _phase = (function(){
 
@@ -11,8 +12,8 @@ var game = (function() {
 		var _all = {};
 		var _current = null;
 		
-		function _change(next) {
-			var next = _all[next];
+		function _change(next_name) {
+			var next = _all[next_name];
 			if(!next || (_current == next))
 			{
 				console.error("[game] phase does not exist", _phase);
@@ -24,8 +25,7 @@ var game = (function() {
 			next.onEnter(_current);
 			_current = next;
 
-			// FIXME
-			//_display.setPhase(next);
+			_display.setState(next_name);
 		}
 
 		var _title = {
@@ -38,7 +38,6 @@ var game = (function() {
 			onText : function(text) {
       	if(text && text.indexOf("rap battle") > -1)
       	{
-      		_display.addWord("ready"); // FIXME
       		_change("rules");
       	}
       	else
@@ -47,13 +46,6 @@ var game = (function() {
 					_speech.flushWithDelay(3);
       	}
 			}
-		}
-
-		var _ready = {
-			onEnter : function(previous) {
-			},
-			onLeave : function(next) {
-			},
 		}
 
 		var _rules = {
@@ -73,35 +65,55 @@ var game = (function() {
 			onEnter : function(previous) {
 				_speech.start();
 				_speech.flushWithDelay(10);
+				_tmp.mode = _modemanager.getRandomMode();
 			},
 			onLeave : function(next) {
 			},
 			onText : function(text) {
-        var words = text.split(" ");
-        for(var i in words)
-          _display.addWord(words[i]);
-
-				_speech.start();
-				_speech.flushWithDelay(10);
+				if(text)
+				{
+					console.log(_tmp.mode.process(text));
+					_display.addWordsWithScore(JSON.stringify(_tmp.mode.process(text)));
+	       	//_change("review");
+	        
+	      }
 			}
 		}
 
 		var _review = {
 			onEnter : function(previous) {
+				_tmp.t = 0;
+			},
+			update : function(dt) {
+				_tmp.t += dt;
+				if(_tmp.t > 10)
+					_change("handover");
 			},
 			onLeave : function(next) {
-			},
+			}
 		}
 
 		var _handover = {
 			onEnter : function(previous) {
+				_speech.start();
+				_speech.flushWithDelay(3);
 			},
 			onLeave : function(next) {
 			},
+			onText : function(text) {
+      	if(text && text.indexOf("ready") > -1)
+      	{
+      		_change("rules");
+      	}
+      	else
+      	{
+      		_speech.start();
+					_speech.flushWithDelay(3);
+      	}
+			}
 		}
 
 		_all["title"] = _title;
-		_all["ready"] = _ready;
 		_all["rules"] = _rules;
 		_all["rap"] = _rap;
 		_all["review"] = _review;
@@ -133,8 +145,9 @@ var game = (function() {
 	{
 		_speech = settings.speech;
 		_display = settings.display;
+		_modemanager = settings.modemanager;
 
-		var n_modules_to_load = 1;
+		var n_modules_to_load = 2;
 		function onModuleLoaded(m)
 		{
 			console.log("[game] module finished loading:", m)
@@ -151,6 +164,11 @@ var game = (function() {
 				}, 1000/60);
 			}
 		}
+
+    window.SWFLoaded = function()
+    {
+      onModuleLoaded("display");
+    }
 
     _speech.init({
       language : "en-GB",

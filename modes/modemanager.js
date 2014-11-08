@@ -6,6 +6,8 @@ var ModeManager = (function () {
     // Singleton
 
     var _modes = {};
+    var _modesArray = [];
+
 
     return {
       register: function (mode)
@@ -15,6 +17,11 @@ var ModeManager = (function () {
       getModes: function()
       {
         return _modes;
+      },
+      getRandomMode : function()
+      {
+        var k = Object.keys(_modes);
+        return _modes[k[Math.floor(Math.random()*k.length)]]
       }
     };
 

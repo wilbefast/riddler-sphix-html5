@@ -30,6 +30,11 @@
     <script type="text/javascript" src="speech.js"></script>
     <script type="text/javascript" src="game.js"></script>
 
+    <script type="text/javascript" src="modes/utils.js"></script>
+    <script type="text/javascript" src="modes/modemanager.js"></script>
+    <script type="text/javascript" src="modes/swearmode.js"></script>
+
+
     <script type="text/javascript">
 
       window.onload = function()
@@ -37,11 +42,9 @@
         game.init({
           display : document.getElementById("GRB"),
           speech : speech,
+          modemanager : ModeManager.getInstance(),
         });
       }
-
-
-      var d = document.getElementById("GRB");
 
     </script>
 
@@ -58,7 +61,7 @@
  
      <form name="form1" onsubmit="return false;">
          <input type="text" name="input" value="" />
-         <input type="button" value="Send" onclick="d.addWord(this.form.input.value);" />
+         <input type="button" value="Send" onclick="document.getElementById("GRB").addWord(this.form.input.value);" />
      </form>
  
  </body>
