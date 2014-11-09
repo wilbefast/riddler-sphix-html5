@@ -109,8 +109,8 @@ package
 			theText.y = actualplayer.y;
 			addChild(theText);
 			actualplayer.talk();
-			theText.rotation = Math.random() * 360;
-			TweenMax.to(theText, Math.random(), { scaleX: theText.scaleX + score, scaleY: theText.scaleY + score, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); removeChild(theText); } } );
+			theText.rotation = Math.random() * 360 - 180;
+			TweenMax.to(theText, Math.random()*0.5 + 0.5, { scaleX: theText.scaleX + score, scaleY: theText.scaleY + score, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); var explo:Explosion = new Explosion(); explo.x = theText.x; explo.y = theText.y; addChild(explo); removeChild(theText); } } );
 		}
 		
 		public function setPlayer(_actualPlayer:int):void 
