@@ -1,68 +1,35 @@
 ModeManager.getInstance().register((function () {
 
-  var _cheeseList = {
-    "Pecora" : 1.0,
-    "Brebis" : 1.0,
-    "Chevre" : 1.0,
-    "Raclette" : 1.0,
-    "Provolone" : 1.0,
-    "Cantal" : 1.0,
-    "Maroilles" : 1.0,
-    "Morbier" : 1.0,
-    "Montbrison" : 1.0,
-    "Leicester" : 1.0,
-    "Tilsit" : 1.0,
-    "Caerphilly" : 1.0,
-    "Windsor" : 1.0,
-    "Stilton" : 1.0,
-    "Gruyere" : 1.0,
-    "Halloumi" : 1.0,
-    "Affinois" : 1.0,
-    "Emmental" : 1.0,
-    "Jarlsberger" : 1.0,
-    "Liptauer" : 1.0,
-    "Wensleydale" : 1.0,
-    "Lancashire" : 1.0,
-    "Stilton" : 1.0,
-    "Gloucester" : 1.0,
-    "Cheshire" : 1.0,
-    "Blue" : 1.0,
-    "Brie" : 1.0,
-    "Roquefort" : 1.0,
-    "Savoyard" : 1.0,
-    "Boursin" : 1.0,
-    "Camembert" : 1.0,
-    "Gouda" : 1.0,
-    "Edam" : 1.0,
-    "Caithness" : 1.0,
-    "Darby" : 1.0,
-    "Wensleydale" : 1.0,
-    "Feta" : 1.0,
-    "Danbo" : 1.0,
-    "Gorgonzola" : 1.0,
-    "Parmesan" : 1.0,
-    "Mozzarella" : 1.0,
-    "Pippo" : 1.0,
-    "Fimboe" : 1.0, 
-    "Cheddar" : 1.0,
-    "Illchester" : 1.0,
-    "Cotswold" : 1.0
+  var _dictionary = {
+    "Chicken" : 1.0,
+    "Cow" : 1.0,
+    "Bull" : 1.0,
+    "Dog" : 1.0,
+    "Donkey" : 1.0,
+    "Goat" : 1.0,
+    "Goose" : 1.0,
+    "Horse" : 1.0,
+    "Pig" : 1.0,
+    "Rooster" : 1.0,
+    "Sheep" : 1.0,
+    "Turkey" : 1.0
+
   }
 
   function _getName() {
-    return "Cheese Mode";
+    return "Farm Animal Mode";
   }
 
   function _getDifficult() {
-    return 0.7;
+    return 0.3;
   }
 
   function _getInstruction() {
-    return "Name as many cheeses as you can, but try not to be too cheesy!";
+    return "Name as many farm animals as you can!";
   }
 
   function _getId() {
-    return "cheese";
+    return "animals_farm";
   }
 
   function _process(text) {
@@ -82,13 +49,13 @@ ModeManager.getInstance().register((function () {
     {
       var word = firstUpper(words[i]);
       var score;
-      var cheesiness = _cheeseList[word]
+      var multiplier = _dictionary[word]
 
-      if(cheesiness)
+      if(multiplier)
       {
         var timesUsed = (wordsTimesUsed[word] || 0);
         
-        score = cheesiness / (2 ^ timesUsed);
+        score = multiplier / (2 ^ timesUsed);
         total_score += score; 
 
         wordsTimesUsed[word] = timesUsed + 1;
@@ -101,11 +68,12 @@ ModeManager.getInstance().register((function () {
 
     // normalise the scores
     var normed_total_score = (3-3/(total_score/3+1))/3;
+    
     var k;
     if(total_score!=0)
       k = normed_total_score/total_score;
     else
-      k = 1;
+      k=1;
     for(var i = 1; i < result.length; i++)
       result[i][1] *= k;
 

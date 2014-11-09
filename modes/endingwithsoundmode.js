@@ -28,7 +28,6 @@ Repeated words score less points";
   {
     return "end_sound_" + this._soundName;
   }
-  
 
   ModeManager.getInstance().register(this);
 }

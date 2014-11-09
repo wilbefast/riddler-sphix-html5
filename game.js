@@ -6,8 +6,9 @@ var game = (function() {
 	var _display;
 	var _modemanager;
 	var _music;
-
 	var _score = 0.5;
+	var _latest_score_delta = 0;
+	var _skip_review = false;
 	var _round = 0;
 	var _player = 0;
 	var _mode = null;
@@ -30,6 +31,7 @@ var game = (function() {
 			_current = next;
 			if(prev)
 				prev.onLeave(next);
+			_speech.stop();
 			_tmp = {};
 			next.onEnter(prev);
 
@@ -42,8 +44,10 @@ var game = (function() {
 				_round = 0;
 				_player = 0;
 				_speech.start();
-				_speech.flushWithDelay(3);
 				_music.menu.play();
+				_display.setRound(1);
+				_display.setPlayer(0);
+				_tmp.t = 0;
 			},
 			onLeave : function(next) {
 				_music.menu.pause();
@@ -56,13 +60,22 @@ var game = (function() {
       	}
       	else if(text && text.indexOf("credits") > -1)
       	{
-      		_change("gameCredits")
+      		_change("gameCredits");
       	}
-    		else 
-      	{
-      		_speech.start();
-					_speech.flushWithDelay(3);
-      	}
+			},
+			update : function(dt)  {
+				_tmp.t += dt;
+				if(_tmp.t > 0.5)
+				{
+					if(_speech.tryMatch("rap battle"))
+						_change("rules");
+					else if(_speech.tryMatch("credits"))
+						_change("gameCredits"); 
+					_tmp.t = 0;
+				}
+			},
+			onSpeechStop : function() {
+				_speech.start();
 			}
 		}
 
@@ -99,15 +112,26 @@ var game = (function() {
 			onText : function(text) {
 				if(text)
 				{
+					_skip_review = false;
+
 					var wordScores = _mode.process(text);
-					console.log(wordScores);
+					_latest_score_delta = -(_player*2 - 1)*wordScores[0]*0.6
+					console.log("[game] score delta =", _latest_score_delta);
+					for(var i = 1; i < wordScores.length; i++)
+						console.log("\t...", wordScores[i][0], wordScores[i][1]);
 
 					_change("review");
 					_display.addWordsWithScore(JSON.stringify(wordScores));
 
-					var total_score = wordScores[0];
-					_score -= (_player*2 - 1)*total_score*0.6;
+					_score += _latest_score_delta;
 					_display.setScore(JSON.stringify([ _score, 1 - _score ]));
+	      }
+	      else
+	      {
+	      	_skip_review = true;
+
+	      	_latest_score_delta = 0;
+	      	_change("review");
 	      }
 			}
 		}
@@ -120,7 +144,7 @@ var game = (function() {
 			},
 			update : function(dt) {
 				_tmp.t += dt;
-				if(_tmp.t > 10)
+				if((_tmp.t > 14) || _skip_review)
 				{
 					_player++;
 					if(_player >= 2)
@@ -138,7 +162,7 @@ var game = (function() {
 			onLeave : function(next) {
 				_music.review[_tmp.prev_round].pause();
 				_music.scratch.play();
-				_display.setRound(_round);
+				_display.setRound(_round + 1);
 				_display.setPlayer(_player);
 			}
 		}
@@ -146,30 +170,39 @@ var game = (function() {
 		var _handOver = {
 			onEnter : function(previous) {
 				_speech.start();
-				_speech.flushWithDelay(3);
 				_music.drums.play();
+				_tmp.t = 0;
 			},
 			onLeave : function(next) {
 				_music.scratch.play();
+				_music.drums.pause();
 			},
 			onText : function(text) {
       	if(text && text.indexOf("ready") > -1)
-      	{
       		_change("rules");
-      	}
-      	else
-      	{
-      		_speech.start();
-					_speech.flushWithDelay(3);
-      	}
+			},
+			update : function(dt)  {
+				_tmp.t += dt;
+				if(_tmp.t > 0.5)
+				{
+					if(_speech.tryMatch("ready"))
+						_change("rules");
+					_tmp.t = 0;
+				}
+			},
+			onSpeechStop : function() {
+				_speech.start();
 			}
 		}
 
 		var _gameOver = {
 			onEnter : function(previous) {
 				_tmp.t = 0;
+				_music.menu.play();
 			},
 			onLeave : function(next) {
+				_music.menu.pause();
+				_music.scratch.play();
 			},
 			update : function(dt) {
 				_tmp.t += dt;
@@ -181,20 +214,28 @@ var game = (function() {
 		var _gameCredits = {
 			onEnter : function(previous) {
 				_speech.start();
-				_speech.flushWithDelay(3);
+				_music.menu.play();
+				_tmp.t = 0;
 			},
 			onLeave : function(next) {
+				_music.menu.pause();
+				_music.scratch.play();
 			},
 			onText : function(text) {
       	if(text && text.indexOf("menu") > -1)
-      	{
       		_change("title");
-      	}
-      	else
-      	{
-      		_speech.start();
-					_speech.flushWithDelay(3);
-      	}
+			},
+			update : function(dt)  {
+				_tmp.t += dt;
+				if(_tmp.t > 0.5)
+				{
+					if(_speech.tryMatch("menu"))
+						_change("title");
+					_tmp.t = 0;
+				}
+			},
+			onSpeechStop : function() {
+				_speech.start();
 			}
 		}
 
@@ -216,10 +257,16 @@ var game = (function() {
 				_current.update(dt);
 		}
 
+		function _onSpeechStop() {
+			if(_current.onSpeechStop)
+				_current.onSpeechStop();
+		}
+
 		return {
 			changeTo : _change,
 			onText : _onText,
-			update : _update
+			update : _update,
+			onSpeechStop : _onSpeechStop
 		}
 	})();
 
@@ -268,6 +315,9 @@ var game = (function() {
       },
       onReady : function() {
       	onModuleLoaded("speech");
+      },
+      onStop : function() {
+      	_phase.onSpeechStop();
       }
     });
 
