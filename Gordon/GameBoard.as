@@ -29,14 +29,14 @@ package
 		public var timer:Timer;
 		public var micro1:MovieClip;
 		public var micro2:MovieClip;
+		public var scoreBarScore:int;
 		
 		public function GameBoard() 
 		{
 			super();
 			addEventListener(Event.ADDED_TO_STAGE, added);
-			timer = new Timer(1000,10 );
+			timer = new Timer(1000,10);
 			timer.addEventListener(TimerEvent.TIMER, passTime);
-			
 			round = 1;
 		}
 		private function added(e:Event):void 
@@ -45,13 +45,23 @@ package
 			subString = TextField(getChildByName("sub"));
 			player1 = Player(getChildByName("TheP1"));
 			player2 = Player(getChildByName("TheP2"));
+			player1.bounce();
+			player2.bounce();
 			roundText = TextField(getChildByName("roundtf"));
 			timerBar = MovieClip(getChildByName("tmBarre"));
 			scoreBar = MovieClip(getChildByName("scoreBG"));
 			micro1 = MovieClip(getChildByName("mic1"));
 			micro2 = MovieClip(getChildByName("mic2"));
+			
+			TweenMax.to(micro1, 0.3, { delay:0.15, y:micro1.y - 5, yoyo:true, repeat: -1 } );
+			TweenMax.to(micro2, 0.3, { delay:0.15, y:micro2.y - 5, yoyo:true, repeat: -1 } );
+			
 			addEventListener(Event.ENTER_FRAME, update);
-			scoreBar.gotoAndStop(100);
+			scoreBarScore = 100;
+			scoreBar.gotoAndStop(scoreBarScore);
+			TweenMax.to(timerBar,1,{y:timerBar.y - 3,yoyo:true,repeat:-1});
+			TweenMax.to(subString,1,{y:subString.y - 3,yoyo:true,repeat:-1});
+			TweenMax.to(roundText,1,{scaleX:roundText.scaleX + 0.1,scaleY:roundText.scaleY + 0.1,x:roundText.x - 2,y:roundText.y - 2, yoyo:true,repeat:-1});
 		}
 		
 		private function passTime(e:TimerEvent):void 
@@ -99,15 +109,15 @@ package
 		public function sendWord(str:String,score:Number):void 
 		{
 			var coefDir:int = 100;
-			var frame:int;
 			subString.appendText(str + " ");
 			if (iActualPlayer == 2)
 			{
 				coefDir = -100;
 			}
-			frame = scoreBar.currentFrame + int(coefDir * score);
-			trace(frame);
-			scoreBar.gotoAndStop(frame);
+			
+			scoreBarScore += int(coefDir * score);
+			TweenMax.to(scoreBar, 0.3, { frame:scoreBarScore, ease:Ease.easeOut } );
+			
 			var theText:BattleText = new BattleText();
 			theText.setText(str);
 			theText.x = actualplayer.x;
@@ -118,7 +128,7 @@ package
 			if (score > 0.02)
 				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { scaleX: theText.scaleX + score*20, scaleY: theText.scaleY + score*20, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); var explo:Explosion = new Explosion(); explo.x = theText.x; explo.y = theText.y; addChild(explo); removeChild(theText); } } );
 			else
-				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { scaleX: theText.scaleX + score, scaleY: theText.scaleY + score, x: wordDestinationX + 2*coefDir, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { removeChild(theText); } } );
+				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { alpha:0, scaleX: theText.scaleX + score, scaleY: theText.scaleY + score, x: wordDestinationX + 2*coefDir, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { removeChild(theText); } } );
 		}
 		
 		public function setPlayer(_actualPlayer:int):void 

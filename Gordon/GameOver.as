@@ -1,5 +1,6 @@
 package  
 {
+	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
@@ -24,6 +25,7 @@ package
 		private var localP2Score:int;
 		private var mcPlayer1:MovieClip;
 		private var mcPlayer2:MovieClip;
+		private var mcWinning:WinningAnimation;
 		private var counter:int = 200;
 		
 		// 530 Max Y
@@ -36,13 +38,32 @@ package
 			p2 = TextField(getChildByName("p2Score"));
 			mcPlayer1 = MovieClip(getChildByName("player1"));
 			mcPlayer2 = MovieClip(getChildByName("player2"));
+			mcWinning = WinningAnimation(getChildByName("winningAnimation"));
+			TweenMax.to(p1, 0.5, { y:p1.y - 2, yoyo:true, repeat: -1 } );
+			TweenMax.to(p2, 0.5, {delay:0.1, y:p2.y - 2, yoyo:true, repeat: -1 } );
+			TweenMax.to(getChildByName("menuBack"), 0.5, {delay:0.3, y:getChildByName("menuBack").y - 2, yoyo:true, repeat: -1 } );
+			
+		}
+		public function init():void 
+		{
+			mcWinning.init();
+			mcPlayer1.y = 930;
+			mcPlayer2.y = 1030;
+			p1.text = 0;
+			p2.text = 0;
 		}
 		public function setPlayerScore(iP1Score:int,iP2Score:int):void 
 		{
 			iP1ScoreMax = iP1Score;
 			iP2ScoreMax = iP2Score;
+			mcWinning.init();
 			mcPlayer1.y = 930;
 			mcPlayer2.y = 1030;
+			p1.text = 0;
+			p2.text = 0;
+			localP1Score = 0;
+			localP2Score = 0;
+			
 			if (iP1Score > iP2Score)
 			{
 				maxScore = iP1Score;
@@ -81,7 +102,14 @@ package
 			}
 			if (!continue1 && !continue2)
 			{
-				removeEventListener(Event.ENTER_FRAME,updateScores);
+				removeEventListener(Event.ENTER_FRAME, updateScores);
+				if (iP1ScoreMax > iP2ScoreMax)
+				{
+					mcWinning.winningPlayer(1);
+				}else
+				{
+					mcWinning.winningPlayer(2);
+				}
 			}
 		}
 		
