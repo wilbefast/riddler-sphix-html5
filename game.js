@@ -87,6 +87,8 @@ var game = (function() {
 				console.log("[game] === using mode " + _mode.getId() + " ===");
 				_display.setRule(_mode.getId());
 				_music.drums.play();
+				_display.setRound(_round + 1);
+				_display.setPlayer(_player);
 			},
 			update : function(dt) {
 				_tmp.t += dt;
@@ -155,7 +157,10 @@ var game = (function() {
 					}
 					console.log("[game] player is " + _player + " round is " + _round);
 					if(_round >= 3)
+					{
 						_change("gameOver");
+						_display.setScore(JSON.stringify(_score));
+					}
 					else
 						_change("handOver");
 				}
@@ -207,6 +212,7 @@ var game = (function() {
 				_sound.scratch.play();
 			},
 			update : function(dt)  {
+
 				_tmp.t += dt;
 				if(_tmp.t > 0.5)
 				{
