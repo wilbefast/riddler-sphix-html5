@@ -8,6 +8,7 @@ var game = (function() {
 	var _music;
 	var _score = 0.5;
 	var _latest_score_delta = 0;
+	var _skip_review = false;
 	var _round = 0;
 	var _player = 0;
 	var _mode = null;
@@ -111,6 +112,8 @@ var game = (function() {
 			onText : function(text) {
 				if(text)
 				{
+					_skip_review = false;
+
 					var wordScores = _mode.process(text);
 					_latest_score_delta = -(_player*2 - 1)*wordScores[0]*0.6
 					console.log("[game] score delta =", _latest_score_delta);
@@ -125,6 +128,8 @@ var game = (function() {
 	      }
 	      else
 	      {
+	      	_skip_review = true;
+
 	      	_latest_score_delta = 0;
 	      	_change("review");
 	      }
@@ -139,7 +144,7 @@ var game = (function() {
 			},
 			update : function(dt) {
 				_tmp.t += dt;
-				if((_tmp.t > 14) || (_latest_score_delta === 0))
+				if((_tmp.t > 14) || _skip_review)
 				{
 					_player++;
 					if(_player >= 2)
@@ -224,8 +229,8 @@ var game = (function() {
 				_tmp.t += dt;
 				if(_tmp.t > 0.5)
 				{
-					if(_speech.tryMatch("ready"))
-						_change("rules");
+					if(_speech.tryMatch("menu"))
+						_change("title");
 					_tmp.t = 0;
 				}
 			},
