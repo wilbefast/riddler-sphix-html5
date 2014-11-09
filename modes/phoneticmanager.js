@@ -181,6 +181,9 @@ var PhoneticManager = (function () {
             return AVERAGE;
           if((['ch','sh'].indexOf(key1)!=-1)&&(['ch','sh'].indexOf(key2)!=-1))
             return AVERAGE;
+          if((['m','n'].indexOf(key1)!=-1)&&(['m','n'].indexOf(key2)!=-1))
+            return CLOSE;
+          
           return NULL;
         }
         return score;
@@ -240,6 +243,7 @@ var PhoneticManager = (function () {
           {
             var phonetic = wordPhonems[j];
             wordScore = Math.max(wordScore, this.evaluateWordPhonemsStartingBy(phonems, length, phonetic));
+            console.log(phonetic, wordScore);
           }
           if(wordScore>0)
           {
@@ -247,7 +251,7 @@ var PhoneticManager = (function () {
             var nbUse = usedWords[word];
             if((nbUse!=undefined)&&(nbUse>=1))
             {
-              var pow2 = 2^(nbUse-1);
+              var pow2 = Math.pow(2,(nbUse-1));
               wordScore/=pow2;
               usedWords[word] = ++nbUse;
               nbWords+=1/(pow2);
@@ -257,16 +261,18 @@ var PhoneticManager = (function () {
               usedWords[word] = 1;
               nbWords++;
             }
+            wordScore = wordScore*wordScore;
             score+=wordScore;
           }
           wordsArray.push([splitText[i],wordScore]);
         }
         
-        var finalScore = (10-10/(nbWords/10+1))/10;
+        var finalScore = (10-10/(score/10+1))/10;
+        var k = finalScore/score;
         r[0] = finalScore;
         for(var i in wordsArray)
         {
-          r.push([wordsArray[i][0],finalScore*wordsArray[i][1]/nbWords,""]);
+          r.push([wordsArray[i][0],k*wordsArray[i][1],""]);
         }
         return r;
       },
@@ -304,7 +310,7 @@ var PhoneticManager = (function () {
             var nbUse = usedWords[word];
             if((nbUse!=undefined)&&(nbUse>=1))
             {
-              var pow2 = 2^(nbUse-1);
+              var pow2 = Math.pow(2,(nbUse-1));
               wordScore/=pow2;
               usedWords[word] = ++nbUse;
               nbWords+=1/(pow2);
@@ -314,16 +320,18 @@ var PhoneticManager = (function () {
               usedWords[word] = 1;
               nbWords++;
             }
+            wordScore = wordScore*wordScore;
             score+=wordScore;
           }
           wordsArray.push([splitText[i],wordScore]);
         }
         
-        var finalScore = (10-10/(nbWords/10+1))/10;
+        var finalScore = (10-10/(score/10+1))/10;
+        var k = finalScore/score;
         r[0] = finalScore;
         for(var i in wordsArray)
         {
-          r.push([wordsArray[i][0],finalScore*wordsArray[i][1]/nbWords,""]);
+          r.push([wordsArray[i][0],k*wordsArray[i][1],""]);
         }
         return r;
       }

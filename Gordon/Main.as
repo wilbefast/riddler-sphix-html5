@@ -32,8 +32,8 @@ package
 		public var timer:Timer;
 		public var jsonIndex:int;
 		public var actualRule:String;
-		public var actualPlayer:int;
-		public var actualRound:int;
+		public var actualPlayer:int = 1;
+		public var actualRound:int = 1;
 		
 		public function Main() 
 		{
@@ -145,11 +145,14 @@ package
 		function setScore(s:String)
 		{
 			var json_score = JSON.parse(s);
-			gameOver.setPlayerScore(json_score[0], json_score[1]);
+			var score1:int = Math.floor(json_score[0] * 100);
+			var score2:int = Math.floor(json_score[1] * 100);
+			
+			gameOver.setPlayerScore(score1*100, score2*100);
 		}
 		function setPlayer(number:int)
 		{
-			actualPlayer = number+1;
+			actualPlayer = number + 1;
 		}
 		
 		public function setRule(s:String):void 

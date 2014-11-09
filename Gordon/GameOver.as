@@ -42,7 +42,7 @@ package
 			iP1ScoreMax = iP1Score;
 			iP2ScoreMax = iP2Score;
 			mcPlayer1.y = 930;
-			mcPlayer2.y = 930;
+			mcPlayer2.y = 1030;
 			if (iP1Score > iP2Score)
 			{
 				maxScore = iP1Score;
@@ -61,23 +61,23 @@ package
 			{
 				localP1Score += counter;
 				p1.text = String(localP1Score);
-				mcPlayer1.y = 930 - (localP1Score / maxScore) * 400;
+				mcPlayer1.y = 930 - (localP1Score / maxScore) * 500;
 				continue1 = true;
 			}else if (localP1Score != iP1ScoreMax)
 			{
 				p1.text = String(iP1ScoreMax);
-				mcPlayer1.y = 930 - (iP1ScoreMax / maxScore) * 400;
+				mcPlayer1.y = 930 - (iP1ScoreMax / maxScore) * 500;
 			}
 			if ((localP2Score + counter) < iP2ScoreMax)
 			{
 				localP2Score += counter;
 				p2.text = String(localP2Score);
-				mcPlayer2.y = 930 - (localP2Score / maxScore) * 400;
+				mcPlayer2.y = 1030 - (localP2Score / maxScore) * 500;
 				continue2 = true;
 			}else if (localP2Score != iP2ScoreMax)
 			{
 				p2.text = String(iP2ScoreMax);
-				mcPlayer2.y = 930 - (iP2ScoreMax / maxScore) * 400;
+				mcPlayer2.y = 1030 - (iP2ScoreMax / maxScore) * 500;
 			}
 			if (!continue1 && !continue2)
 			{

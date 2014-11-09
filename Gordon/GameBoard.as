@@ -27,6 +27,9 @@ package
 		public var iActualPlayer:int;
 		public var scoreBar:MovieClip;
 		public var timer:Timer;
+		public var micro1:MovieClip;
+		public var micro2:MovieClip;
+		
 		public function GameBoard() 
 		{
 			super();
@@ -45,6 +48,8 @@ package
 			roundText = TextField(getChildByName("roundtf"));
 			timerBar = MovieClip(getChildByName("tmBarre"));
 			scoreBar = MovieClip(getChildByName("scoreBG"));
+			micro1 = MovieClip(getChildByName("mic1"));
+			micro2 = MovieClip(getChildByName("mic2"));
 			addEventListener(Event.ENTER_FRAME, update);
 			scoreBar.gotoAndStop(100);
 		}
@@ -109,7 +114,7 @@ package
 			theText.y = actualplayer.y;
 			addChild(theText);
 			actualplayer.talk();
-			theText.rotation = Math.random() * 200 - 100;
+			theText.rotation = Math.random() * 100 - 50;
 			if (score > 0.02)
 				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { scaleX: theText.scaleX + score*20, scaleY: theText.scaleY + score*20, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); var explo:Explosion = new Explosion(); explo.x = theText.x; explo.y = theText.y; addChild(explo); removeChild(theText); } } );
 			else
@@ -121,10 +126,14 @@ package
 			iActualPlayer = _actualPlayer;
 			if (iActualPlayer == 1)
 			{
+				micro1.gotoAndPlay(1);
+				micro2.gotoAndStop(1);
 				actualplayer = player1;
 				wordDestinationX = 700;
 			}else
 			{
+				micro1.gotoAndStop(1);
+				micro2.gotoAndPlay(1);
 				actualplayer = player2;
 				wordDestinationX = 100;
 			}
