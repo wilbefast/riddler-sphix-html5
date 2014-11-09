@@ -55,7 +55,7 @@ ModeManager.getInstance().register((function () {
       {
         var timesUsed = (wordsTimesUsed[word] || 0);
         
-        score = multiplier / (2 ^ timesUsed);
+        score = multiplier / Math.pow(2, timesUsed);
         total_score += score; 
 
         wordsTimesUsed[word] = timesUsed + 1;

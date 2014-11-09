@@ -6,6 +6,7 @@ var game = (function() {
 	var _display;
 	var _modemanager;
 	var _music;
+	var _sound;
 	var _score = 0.5;
 	var _latest_score_delta = 0;
 	var _skip_review = false;
@@ -51,7 +52,7 @@ var game = (function() {
 			},
 			onLeave : function(next) {
 				_music.menu.pause();
-				_music.scratch.play();
+				_sound.scratch.play();
 			},
 			onText : function(text) {
       	if(text && text.indexOf("rap battle") > -1)
@@ -94,7 +95,7 @@ var game = (function() {
 			},
 			onLeave : function(next) {
 				_music.drums.pause();
-				_music.scratch.play();
+				_sound.scratch.play();
 			},
 		}
 
@@ -107,7 +108,7 @@ var game = (function() {
 			},
 			onLeave : function(next) {
 				_music.rap[_round].pause();
-				_music.scratch.play();
+				_sound.scratch.play();
 			},
 			onText : function(text) {
 				if(text)
@@ -161,7 +162,7 @@ var game = (function() {
 			},
 			onLeave : function(next) {
 				_music.review[_tmp.prev_round].pause();
-				_music.scratch.play();
+				_sound.scratch.play();
 				_display.setRound(_round + 1);
 				_display.setPlayer(_player);
 			}
@@ -174,7 +175,7 @@ var game = (function() {
 				_tmp.t = 0;
 			},
 			onLeave : function(next) {
-				_music.scratch.play();
+				_sound.scratch.play();
 				_music.drums.pause();
 			},
 			onText : function(text) {
@@ -197,18 +198,30 @@ var game = (function() {
 
 		var _gameOver = {
 			onEnter : function(previous) {
+				_speech.start();
 				_tmp.t = 0;
 				_music.menu.play();
 			},
 			onLeave : function(next) {
 				_music.menu.pause();
-				_music.scratch.play();
+				_sound.scratch.play();
 			},
-			update : function(dt) {
+			update : function(dt)  {
 				_tmp.t += dt;
-				if(_tmp.t > 8)
-					_change("title");
+				if(_tmp.t > 0.5)
+				{
+					if(_speech.tryMatch("menu"))
+						_change("title");
+					_tmp.t = 0;
+				}
 			},
+			onText : function(text) {
+      	if(text && text.indexOf("menu") > -1)
+      		_change("menu");
+			},
+			onSpeechStop : function() {
+				_speech.start();
+			}
 		}
 
 		var _gameCredits = {
@@ -219,7 +232,7 @@ var game = (function() {
 			},
 			onLeave : function(next) {
 				_music.menu.pause();
-				_music.scratch.play();
+				_sound.scratch.play();
 			},
 			onText : function(text) {
       	if(text && text.indexOf("menu") > -1)
@@ -281,6 +294,7 @@ var game = (function() {
 		_display = settings.display;
 		_modemanager = settings.modemanager;
 		_music = settings.music;
+		_sound = settings.sound;
 
 		var n_modules_to_load = 2;
 		function onModuleLoaded(m)

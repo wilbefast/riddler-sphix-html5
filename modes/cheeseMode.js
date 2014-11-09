@@ -16,6 +16,7 @@ ModeManager.getInstance().register((function () {
     "Windsor" : 1.0,
     "Stilton" : 1.0,
     "Gruyere" : 1.0,
+    "Grana" : 1.0,
     "Halloumi" : 1.0,
     "Affinois" : 1.0,
     "Emmental" : 1.0,
@@ -46,7 +47,8 @@ ModeManager.getInstance().register((function () {
     "Fimboe" : 1.0, 
     "Cheddar" : 1.0,
     "Illchester" : 1.0,
-    "Cotswold" : 1.0
+    "Cotswold" : 1.0,
+    "Scarmoza" : 1.0
   }
 
   function _getName() {
@@ -88,7 +90,7 @@ ModeManager.getInstance().register((function () {
       {
         var timesUsed = (wordsTimesUsed[word] || 0);
         
-        score = cheesiness / (2 ^ timesUsed);
+        score = cheesiness / Math.pow(2, timesUsed);
         total_score += score; 
 
         wordsTimesUsed[word] = timesUsed + 1;
