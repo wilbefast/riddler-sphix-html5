@@ -46,6 +46,7 @@ package
 			timerBar = MovieClip(getChildByName("tmBarre"));
 			scoreBar = MovieClip(getChildByName("scoreBG"));
 			addEventListener(Event.ENTER_FRAME, update);
+			scoreBar.gotoAndStop(100);
 		}
 		
 		private function passTime(e:TimerEvent):void 
@@ -58,7 +59,6 @@ package
 			timerBar.gotoAndStop(1);
 			timer.reset();
 			timer.start();
-			scoreBar.gotoAndStop(100);
 		}
 		public function setRound(round:int):void 
 		{
@@ -100,7 +100,7 @@ package
 			{
 				coefDir = -100;
 			}
-			frame = scoreBar.currentFrame + int(coefDir * score / 3);
+			frame = scoreBar.currentFrame + int(coefDir * score);
 			trace(frame);
 			scoreBar.gotoAndStop(frame);
 			var theText:BattleText = new BattleText();
@@ -109,8 +109,11 @@ package
 			theText.y = actualplayer.y;
 			addChild(theText);
 			actualplayer.talk();
-			theText.rotation = Math.random() * 360 - 180;
-			TweenMax.to(theText, Math.random()*0.5 + 0.5, { scaleX: theText.scaleX + score, scaleY: theText.scaleY + score, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); var explo:Explosion = new Explosion(); explo.x = theText.x; explo.y = theText.y; addChild(explo); removeChild(theText); } } );
+			theText.rotation = Math.random() * 200 - 100;
+			if (score > 0.02)
+				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { scaleX: theText.scaleX + score*20, scaleY: theText.scaleY + score*20, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); var explo:Explosion = new Explosion(); explo.x = theText.x; explo.y = theText.y; addChild(explo); removeChild(theText); } } );
+			else
+				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { scaleX: theText.scaleX + score, scaleY: theText.scaleY + score, x: wordDestinationX + 2*coefDir, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { removeChild(theText); } } );
 		}
 		
 		public function setPlayer(_actualPlayer:int):void 
