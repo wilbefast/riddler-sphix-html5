@@ -5,6 +5,7 @@ package
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
+	import flash.media.Sound;
 	import flash.text.TextField;
 	import flash.utils.Timer;
 	
@@ -125,10 +126,11 @@ package
 			addChild(theText);
 			actualplayer.talk();
 			theText.rotation = Math.random() * 100 - 50;
+			playSound("gun");
 			if (score > 0.02)
-				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { scaleX: theText.scaleX + score*20, scaleY: theText.scaleY + score*20, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); var explo:Explosion = new Explosion(); explo.x = theText.x; explo.y = theText.y; addChild(explo); removeChild(theText); } } );
+				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { scaleX: theText.scaleX + score * 20, scaleY: theText.scaleY + score * 20, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); playSound(randomHitSound()); var explo:Explosion = new Explosion(); explo.x = theText.x; explo.y = theText.y; addChild(explo); removeChild(theText); } } );
 			else
-				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { alpha:0, scaleX: theText.scaleX + score, scaleY: theText.scaleY + score, x: wordDestinationX + 2*coefDir, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { removeChild(theText); } } );
+				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { alpha:0, scaleX: theText.scaleX + score, scaleY: theText.scaleY + score, x: wordDestinationX + 2*coefDir, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete: function destroyText() { playSound("miss"); removeChild(theText); } } );
 		}
 		
 		public function setPlayer(_actualPlayer:int):void 
@@ -147,6 +149,44 @@ package
 				actualplayer = player2;
 				wordDestinationX = 100;
 			}
+		}
+		public function randomHitSound():String 
+		{
+			return "hit" + int(Math.random() * 5 + 1);
+		}
+		public function playSound(str:String)
+		{
+			var snd:Sound;
+			switch (str) 
+			{
+				case "hit1":
+					snd = new Hit01();
+				break;
+				case "hit2":
+					snd = new Hit02();
+					
+				break;
+				case "hit3":
+					snd = new Hit03();
+					
+				break;
+				case "hit4":
+					snd = new Hit04();
+					
+				break;
+				case "hit5":
+					snd = new Hit05();
+					
+				break;
+				case "miss":
+					snd = new miss();
+				break;
+				case "gun":
+					snd = new gunfire();
+				break;
+				default:
+			}
+			snd.play(0, 0);
 		}
 	}
 
