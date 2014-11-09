@@ -71,13 +71,14 @@ package
 		private function passTime(e:TimerEvent):void 
 		{
 			timerBar.nextFrame();
+			if (timerBar.currentFrame == 10)
+				playSound("reload");
 		}
 		public function init():void 
 		{
 			subString.text = "";
 			timerBar.gotoAndStop(1);
 			timer.reset();
-			playSound("reload");
 			timer.start();
 		}
 		public function setRound(round:int):void 
