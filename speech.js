@@ -18,6 +18,8 @@ var speech = (function() {
 
 	    if(settings.onStart)
 	    	settings.onStart();
+
+	    _state = "running";
 	  };
 
 	  _recognition.onerror = function(event) 
@@ -37,6 +39,8 @@ var speech = (function() {
 	  		settings.onRecognised(null);
 	  	_full_transcript = "";
 	  	_draft_transcript = "";
+
+	  	_state = "ready";
 
 	  	if(settings.onStop)
 	  		settings.onStop();
@@ -64,15 +68,23 @@ var speech = (function() {
 
 	function _start()
 	{
-		_recognition.start();
+		if(_state == "ready")
+			_recognition.start();
+		else
+			console.warn("[speech] can't start, not ready");
 	}
 
 	function _stop()
 	{
-		console.log("[speech] stopping recognition");
-		
-		_recognition.stop();
-		_flushing = false;
+		if(_state == "running")
+		{
+			console.log("[speech] stopping recognition");
+			_recognition.stop();
+			_flushing = false;
+			_state = "stopping";
+		}
+		else
+			console.warn("[speech] can't stop, not running");
 	}
 
 	var _flushing = false;
@@ -88,10 +100,25 @@ var speech = (function() {
 		}, 1000*(delay || 0));
 	}
 
+	function _tryMatch(word)
+	{
+		if(_state == "running" || _state == "stopping")
+		{
+			return(_full_transcript.indexOf(word) > -1
+				|| _draft_transcript.indexOf(word) > -1);
+		}
+		else
+		{
+			console.warn("[speech] can't match, not running");
+			return false;
+		}
+	}
+
 	return {
 		init : _init,
 		start : _start,
 		stop : _stop,
-		flushWithDelay : _flushWithDelay
+		flushWithDelay : _flushWithDelay,
+		tryMatch : _tryMatch
 	}
 })();
