@@ -11,11 +11,11 @@ var PhoneticManager = (function () {
     var NULL = 0;
 
     var _vowels = {
-      'a':["AA", "AA0", "AA1", "AA2", "AE", "AE0", "AE1", "AE2", "AH", "AH0", "AH1", "AH2", "AO", "AO0", "AO1", "AO2", "AW", "AW0", "AW1", "AW2", "AY", "AY0", "AY1", "AY2"],
-      'e':["EH", "EH0", "EH1", "EH2", "ER", "ER0", "ER1", "ER2", "EY", "EY0", "EY1", "EY2"],
-      'i':["IH", "IH0", "IH1", "IH2", "IY", "IY0", "IY1", "IY2", "Y"],
-      'o':["OW", "OW0", "OW1", "OW2", "OY", "OY0", "OY1", "OY2"],
-      'u':["UH", "UH0", "UH1", "UH2", "UW", "UW0", "UW1", "UW2"]
+      'a':["A", "AA", "AA0", "AA1", "AA2", "AE", "AE0", "AE1", "AE2", "AH", "AH0", "AH1", "AH2", "AO", "AO0", "AO1", "AO2", "AW", "AW0", "AW1", "AW2", "AY", "AY0", "AY1", "AY2"],
+      'e':["E", "EH", "EH0", "EH1", "EH2", "ER", "ER0", "ER1", "ER2", "EY", "EY0", "EY1", "EY2"],
+      'i':["I", "IH", "IH0", "IH1", "IH2", "IY", "IY0", "IY1", "IY2", "Y"],
+      'o':["O", "OW", "OW0", "OW1", "OW2", "OY", "OY0", "OY1", "OY2"],
+      'u':["U", "UH", "UH0", "UH1", "UH2", "UW", "UW0", "UW1", "UW2"]
     };
 
     var _consonants = {
@@ -25,9 +25,9 @@ var PhoneticManager = (function () {
       'd':["D"],
       'f':["F"],
       'g':["G"],
-      'h':["HH"],
-      'j':["JH"],
-      'k':["K"],
+      'h':["H", "HH"],
+      'j':["J", "JH"],
+      'k':["C", "K", "Q", "X"],
       'l':["L"],
       'm':["M"],
       'n':["N", "NG"],
@@ -79,7 +79,34 @@ var PhoneticManager = (function () {
         
         if(request.status === 200 || request.status == 0)
         {
-            return JSON.parse(request.responseText);
+          var result = JSON.parse(request.responseText);
+          for(var it in result)
+          {
+            if(result[it]==null)
+            {
+              var item = text.split(' ')[it];
+              console.log(item);
+              var i = 0;
+              var r = [];
+              while(i<item.length)
+              {
+                var key = item.substr(i,2).toUpperCase();
+                if(getKeyFromPhonem(key)!=null)
+                {
+                  i+=2;
+                  r.push(key);
+                }
+                else
+                {
+                  key = item.substr(i,1).toUpperCase();
+                  i++;
+                  r.push(key);
+                }
+                result[it]=[r];
+              }
+            }
+          }
+          return result;
         }
       },
       
