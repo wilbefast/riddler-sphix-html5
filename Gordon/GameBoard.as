@@ -46,6 +46,7 @@ package
 			timerBar = MovieClip(getChildByName("tmBarre"));
 			scoreBar = MovieClip(getChildByName("scoreBG"));
 			addEventListener(Event.ENTER_FRAME, update);
+			scoreBar.gotoAndStop(100);
 		}
 		
 		private function passTime(e:TimerEvent):void 
@@ -58,7 +59,6 @@ package
 			timerBar.gotoAndStop(1);
 			timer.reset();
 			timer.start();
-			scoreBar.gotoAndStop(100);
 		}
 		public function setRound(round:int):void 
 		{
@@ -100,7 +100,7 @@ package
 			{
 				coefDir = -100;
 			}
-			frame = scoreBar.currentFrame + int(coefDir * score / 3);
+			frame = scoreBar.currentFrame + int(coefDir * score);
 			trace(frame);
 			scoreBar.gotoAndStop(frame);
 			var theText:BattleText = new BattleText();
