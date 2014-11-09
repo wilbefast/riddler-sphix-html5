@@ -85,7 +85,6 @@ var PhoneticManager = (function () {
             if(result[it]==null)
             {
               var item = text.split(' ')[it];
-              console.log(item);
               var i = 0;
               var r = [];
               while(i<item.length)
@@ -243,7 +242,6 @@ var PhoneticManager = (function () {
           {
             var phonetic = wordPhonems[j];
             wordScore = Math.max(wordScore, this.evaluateWordPhonemsStartingBy(phonems, length, phonetic));
-            console.log(phonetic, wordScore);
           }
           if(wordScore>0)
           {
@@ -292,7 +290,6 @@ var PhoneticManager = (function () {
             for(var j in phonetized[i])
               phonetized[i][j].reverse();
         }
-        console.log(phonetized);
         var splitText = text.split(' ');
         
         for(var i in phonetized)
