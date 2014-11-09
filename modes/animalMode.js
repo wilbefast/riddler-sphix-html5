@@ -68,7 +68,12 @@ ModeManager.getInstance().register((function () {
 
     // normalise the scores
     var normed_total_score = (3-3/(total_score/3+1))/3;
-    var k = normed_total_score/total_score;
+    
+    var k;
+    if(total_score!=0)
+      k = normed_total_score/total_score;
+    else
+      k=1;
     for(var i = 1; i < result.length; i++)
       result[i][1] *= k;
 
