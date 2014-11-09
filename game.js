@@ -44,6 +44,8 @@ var game = (function() {
 				_speech.start();
 				_speech.flushWithDelay(3);
 				_music.menu.play();
+				_display.setRound(1);
+				_display.setPlayer(0);
 			},
 			onLeave : function(next) {
 				_music.menu.pause();
@@ -120,7 +122,7 @@ var game = (function() {
 			},
 			update : function(dt) {
 				_tmp.t += dt;
-				if(_tmp.t > 10)
+				if(_tmp.t > 14)
 				{
 					_player++;
 					if(_player >= 2)
@@ -138,7 +140,7 @@ var game = (function() {
 			onLeave : function(next) {
 				_music.review[_tmp.prev_round].pause();
 				_music.scratch.play();
-				_display.setRound(_round);
+				_display.setRound(_round + 1);
 				_display.setPlayer(_player);
 			}
 		}
@@ -151,6 +153,7 @@ var game = (function() {
 			},
 			onLeave : function(next) {
 				_music.scratch.play();
+				_music.drums.pause();
 			},
 			onText : function(text) {
       	if(text && text.indexOf("ready") > -1)
@@ -168,8 +171,11 @@ var game = (function() {
 		var _gameOver = {
 			onEnter : function(previous) {
 				_tmp.t = 0;
+				_music.menu.play();
 			},
 			onLeave : function(next) {
+				_music.menu.pause();
+				_music.scratch.play();
 			},
 			update : function(dt) {
 				_tmp.t += dt;
@@ -182,8 +188,11 @@ var game = (function() {
 			onEnter : function(previous) {
 				_speech.start();
 				_speech.flushWithDelay(3);
+				_music.menu.play();
 			},
 			onLeave : function(next) {
+				_music.menu.pause();
+				_music.scratch.play();
 			},
 			onText : function(text) {
       	if(text && text.indexOf("menu") > -1)

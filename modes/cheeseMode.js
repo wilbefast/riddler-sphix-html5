@@ -86,7 +86,6 @@ ModeManager.getInstance().register((function () {
 
       if(cheesiness)
       {
-        console.log(word, "is cheesy!");
         var timesUsed = (wordsTimesUsed[word] || 0);
         
         score = cheesiness / (2 ^ timesUsed);
