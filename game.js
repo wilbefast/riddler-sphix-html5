@@ -49,6 +49,7 @@ var game = (function() {
 				_display.setRound(1);
 				_display.setPlayer(0);
 				_tmp.t = 0;
+				_sound.intro.play();
 			},
 			onLeave : function(next) {
 				_music.menu.pause();
