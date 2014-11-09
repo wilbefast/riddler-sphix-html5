@@ -7,7 +7,7 @@ var game = (function() {
 	var _modemanager;
 	var _music;
 	var _sound;
-	var _score = 0.5;
+	var _score;
 	var _latest_score_delta = 0;
 	var _skip_review = false;
 	var _round = 0;
@@ -41,7 +41,7 @@ var game = (function() {
 
 		var _title = {
 			onEnter : function(previous) {
-				_score = 0.5;
+				_score = [ 0, 0 ];
 				_round = 0;
 				_player = 0;
 				_speech.start();
@@ -87,6 +87,8 @@ var game = (function() {
 				console.log("[game] === using mode " + _mode.getId() + " ===");
 				_display.setRule(_mode.getId());
 				_music.drums.play();
+				_display.setRound(_round + 1);
+				_display.setPlayer(_player);
 			},
 			update : function(dt) {
 				_tmp.t += dt;
@@ -116,7 +118,7 @@ var game = (function() {
 					_skip_review = false;
 
 					var wordScores = _mode.process(text);
-					_latest_score_delta = -(_player*2 - 1)*wordScores[0]*0.6
+					_latest_score_delta = wordScores[0]/3;
 					console.log("[game] score delta =", _latest_score_delta);
 					for(var i = 1; i < wordScores.length; i++)
 						console.log("\t...", wordScores[i][0], wordScores[i][1]);
@@ -124,8 +126,8 @@ var game = (function() {
 					_change("review");
 					_display.addWordsWithScore(JSON.stringify(wordScores));
 
-					_score += _latest_score_delta;
-					_display.setScore(JSON.stringify([ _score, 1 - _score ]));
+					_score[_player] += _latest_score_delta;
+					_display.setScore(JSON.stringify(_score));
 	      }
 	      else
 	      {
@@ -155,7 +157,10 @@ var game = (function() {
 					}
 					console.log("[game] player is " + _player + " round is " + _round);
 					if(_round >= 3)
+					{
 						_change("gameOver");
+						_display.setScore(JSON.stringify(_score));
+					}
 					else
 						_change("handOver");
 				}
@@ -207,6 +212,7 @@ var game = (function() {
 				_sound.scratch.play();
 			},
 			update : function(dt)  {
+
 				_tmp.t += dt;
 				if(_tmp.t > 0.5)
 				{
