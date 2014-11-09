@@ -198,6 +198,7 @@ var game = (function() {
 
 		var _gameOver = {
 			onEnter : function(previous) {
+				_speech.start();
 				_tmp.t = 0;
 				_music.menu.play();
 			},
@@ -205,11 +206,22 @@ var game = (function() {
 				_music.menu.pause();
 				_sound.scratch.play();
 			},
-			update : function(dt) {
+			update : function(dt)  {
 				_tmp.t += dt;
-				if(_tmp.t > 8)
-					_change("title");
+				if(_tmp.t > 0.5)
+				{
+					if(_speech.tryMatch("menu"))
+						_change("title");
+					_tmp.t = 0;
+				}
 			},
+			onText : function(text) {
+      	if(text && text.indexOf("menu") > -1)
+      		_change("menu");
+			},
+			onSpeechStop : function() {
+				_speech.start();
+			}
 		}
 
 		var _gameCredits = {
