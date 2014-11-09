@@ -104,6 +104,7 @@ package
 				case "title" :
 					if (contains(gameCredits)) removeChild(gameCredits);
 					if (contains(gameOver)) removeChild(gameOver);
+					gameBoard.resetScore();
 					inMenu = true;
 					inGame = false;
 					addChild(gameMenu);

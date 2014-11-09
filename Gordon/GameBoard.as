@@ -64,7 +64,10 @@ package
 			TweenMax.to(subString,1,{y:subString.y - 3,yoyo:true,repeat:-1});
 			TweenMax.to(roundText,1,{scaleX:roundText.scaleX + 0.1,scaleY:roundText.scaleY + 0.1,x:roundText.x - 2,y:roundText.y - 2, yoyo:true,repeat:-1});
 		}
-		
+		public function resetScore():void 
+		{
+			scoreBarScore = 0;
+		}
 		private function passTime(e:TimerEvent):void 
 		{
 			timerBar.nextFrame();
@@ -74,6 +77,7 @@ package
 			subString.text = "";
 			timerBar.gotoAndStop(1);
 			timer.reset();
+			playSound("reload");
 			timer.start();
 		}
 		public function setRound(round:int):void 
@@ -183,6 +187,9 @@ package
 				break;
 				case "gun":
 					snd = new gunfire();
+				break;
+				case "reload":
+					snd = new guncock();
 				break;
 				default:
 			}
