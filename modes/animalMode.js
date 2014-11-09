@@ -12,7 +12,21 @@ ModeManager.getInstance().register((function () {
     "Pig" : 1.0,
     "Rooster" : 1.0,
     "Sheep" : 1.0,
-    "Turkey" : 1.0
+    "Turkey" : 1.0,
+    "Duck" : 1.0,
+    "Hen" : 1.0,
+    "Cat" : 1.0,
+    "Dog" : 1.0,
+    "Rabbit" : 1.0,
+    "Bunny" : 1.0,
+    "Piglet" : 1.0,
+    "Stallion" : 1.0,
+    "Calf" : 1.0,
+    "Foal" : 1.0,
+    "Kid" : 1.0,
+    "Lamb" : 1.0,
+    "Hog" : 1.0,
+    "Boar" : 1.0
 
   }
 
