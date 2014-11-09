@@ -66,7 +66,8 @@ package
 		}
 		public function resetScore():void 
 		{
-			scoreBarScore = 0;
+			scoreBarScore = 100;
+			scoreBar.gotoAndStop(scoreBarScore);
 		}
 		private function passTime(e:TimerEvent):void 
 		{
