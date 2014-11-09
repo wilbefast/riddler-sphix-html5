@@ -114,9 +114,9 @@ package
 			theText.y = actualplayer.y;
 			addChild(theText);
 			actualplayer.talk();
-			theText.rotation = Math.random() * 200 - 100;
+			theText.rotation = Math.random() * 100 - 50;
 			if (score > 0.02)
-				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { scaleX: theText.scaleX + score*20, scaleY: theText.scaleY + score*20, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); var explo:Explosion = new Explosion(); explo.x = theText.x; explo.y = theText.y; addChild(explo); removeChild(theText); } } );
+				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { scaleX: theText.scaleX + score*20, scaleY: theText.scaleY + score*20, x: wordDestinationX, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { ScreenShake(); var explo:Explosion = new Explosion(); explo.x = theText.x + theText.width/2; explo.y = theText.y + theText.height/2; addChild(explo); removeChild(theText); } } );
 			else
 				TweenMax.to(theText, Math.random() * 0.5 + 0.5, { scaleX: theText.scaleX + score, scaleY: theText.scaleY + score, x: wordDestinationX + 2*coefDir, y:Math.random() * 250 + 100, ease:Ease.easeIn, onComplete:function destroyText() { removeChild(theText); } } );
 		}
