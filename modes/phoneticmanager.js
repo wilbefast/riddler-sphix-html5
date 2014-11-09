@@ -264,9 +264,12 @@ var PhoneticManager = (function () {
           }
           wordsArray.push([splitText[i],wordScore]);
         }
-        
         var finalScore = (10-10/(score/10+1))/10;
-        var k = finalScore/score;
+        var k;
+        if(score!=0)
+          k = finalScore/score;
+        else
+          k=1;
         r[0] = finalScore;
         for(var i in wordsArray)
         {
@@ -324,7 +327,11 @@ var PhoneticManager = (function () {
         }
         
         var finalScore = (10-10/(score/10+1))/10;
-        var k = finalScore/score;
+        var k;
+        if(score!=0)
+          k = finalScore/score;
+        else
+          k=1;
         r[0] = finalScore;
         for(var i in wordsArray)
         {
