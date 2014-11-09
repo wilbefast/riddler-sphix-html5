@@ -32,8 +32,8 @@ package
 		public var timer:Timer;
 		public var jsonIndex:int;
 		public var actualRule:String;
-		public var actualPlayer:int;
-		public var actualRound:int;
+		public var actualPlayer:int = 1;
+		public var actualRound:int = 1;
 		
 		public function Main() 
 		{
@@ -149,7 +149,7 @@ package
 		}
 		function setPlayer(number:int)
 		{
-			actualPlayer = number+1;
+			actualPlayer = number + 1;
 		}
 		
 		public function setRule(s:String):void 
