@@ -112,8 +112,8 @@ package
 				case "rules" :
 					if (contains(gameMenu)) removeChild(gameMenu);
 					if (contains(gameHandOver)) removeChild(gameHandOver);
-					addChild(gameRules);
 					gameRules.setRules(actualRule);
+					addChild(gameRules);
 					inMenu = false;
 				break;
 				case "rap" :
