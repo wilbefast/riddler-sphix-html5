@@ -58,7 +58,7 @@ package
 			console.addCommand("setScore", setScore);
 				
 			//receiveWordsScore("[[\"I\",0.8,\"\"],[\"love\",0.2,\"\"],[\"cheese\",1,\"\"],[\"!\",0,\"\"]]");
-			
+			//addWordsWithScore [["I",0.08,""],["love",0.02,""],["cheese",0.1,""],["!",0,""]]
 			//[["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""],["I",0.8,""],["love",0.2,""],["cheese",1,""],["!",0,""]]
 			//receiveWords("ready");
 			gameMenu = new GameMenu();
@@ -91,9 +91,10 @@ package
 		{
 			json_in = JSON.parse(s);
 			jsonIndex = 1;
+			showWords(null);
 			timer.reset();
 			timer.delay = 10000 / json_in.length-1;
-			timer.repeatCount = json_in.length-1;
+			timer.repeatCount = json_in.length-2;
 			timer.start();
 		}
 		function changeState(s:String)
@@ -133,6 +134,7 @@ package
 				break;
 				case "gameOver" :
 					if (contains(gameBoard)) removeChild(gameBoard);
+					gameOver.init();
 					addChild(gameOver);
 				break;
 				case "gameCredits" :
@@ -148,7 +150,7 @@ package
 			var score1:int = Math.floor(json_score[0] * 100);
 			var score2:int = Math.floor(json_score[1] * 100);
 			
-			gameOver.setPlayerScore(score1*100, score2*100);
+			gameOver.setPlayerScore(score1*1000, score2*1000);
 		}
 		function setPlayer(number:int)
 		{
