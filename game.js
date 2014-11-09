@@ -106,7 +106,7 @@ var game = (function() {
 					_display.addWordsWithScore(JSON.stringify(wordScores));
 
 					var total_score = wordScores[0];
-					_score -= (_player*2 - 1)*total_score/3;
+					_score -= (_player*2 - 1)*total_score*0.6;
 					_display.setScore(JSON.stringify([ _score, 1 - _score ]));
 	      }
 			}
