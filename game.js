@@ -54,7 +54,7 @@ var game = (function() {
       	{
       		_change("rules");
       	}
-      	else if(text && text.indexOf("gameCredits") > -1)
+      	else if(text && text.indexOf("credits") > -1)
       	{
       		_change("gameCredits")
       	}
@@ -104,10 +104,9 @@ var game = (function() {
 
 					_change("review");
 					_display.addWordsWithScore(JSON.stringify(wordScores));
-					console.log("[game] sending JSON to display:", JSON.stringify(wordScores));
 
 					var total_score = wordScores[0];
-					_score -= (_player*2 - 1)*total_score/3;
+					_score -= (_player*2 - 1)*total_score*0.6;
 					_display.setScore(JSON.stringify([ _score, 1 - _score ]));
 	      }
 			}
@@ -129,7 +128,7 @@ var game = (function() {
 						_player = 0
 						_round++;
 					}
-					console.log("[game] player is " + player + " round is " + round);
+					console.log("[game] player is " + _player + " round is " + _round);
 					if(_round >= 3)
 						_change("gameOver");
 					else
@@ -187,7 +186,7 @@ var game = (function() {
 			onLeave : function(next) {
 			},
 			onText : function(text) {
-      	if(text && text.indexOf("ready") > -1)
+      	if(text && text.indexOf("menu") > -1)
       	{
       		_change("title");
       	}

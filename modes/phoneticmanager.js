@@ -242,6 +242,63 @@ var PhoneticManager = (function () {
           r.push([wordsArray[i][0],finalScore*wordsArray[i][1]/nbWords,""]);
         }
         return r;
+      },
+      
+      evaluateTextEndingBy:function(phonems, length, text)
+      {
+        var r = [0];
+        var wordsArray = [];
+        var score = 0;
+        var nbWords = 0;
+        var usedWords =[];
+        var phonetized = this.phonetize(text);
+        phonems.reverse();
+        for(var i in phonetized)
+        {
+          if(phonetized[i]!=null)
+            for(var j in phonetized[i])
+              phonetized[i][j].reverse();
+        }
+        console.log(phonetized);
+        var splitText = text.split(' ');
+        
+        for(var i in phonetized)
+        {
+          var wordScore = 0;
+          var wordPhonems = phonetized[i];
+          for(var j in wordPhonems)
+          {
+            var phonetic = wordPhonems[j];
+            wordScore = Math.max(wordScore, this.evaluateWordPhonemsStartingBy(phonems, length, phonetic));
+          }
+          if(wordScore>0)
+          {
+            var word = splitText[i];
+            var nbUse = usedWords[word];
+            if((nbUse!=undefined)&&(nbUse>=1))
+            {
+              var pow2 = 2^(nbUse-1);
+              wordScore/=pow2;
+              usedWords[word] = ++nbUse;
+              nbWords+=1/(pow2);
+            }
+            else
+            {
+              usedWords[word] = 1;
+              nbWords++;
+            }
+            score+=wordScore;
+          }
+          wordsArray.push([splitText[i],wordScore]);
+        }
+        
+        var finalScore = (10-10/(nbWords/10+1))/10;
+        r[0] = finalScore;
+        for(var i in wordsArray)
+        {
+          r.push([wordsArray[i][0],finalScore*wordsArray[i][1]/nbWords,""]);
+        }
+        return r;
       }
     };
 
