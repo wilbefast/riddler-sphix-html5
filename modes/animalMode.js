@@ -29,7 +29,7 @@ ModeManager.getInstance().register((function () {
   }
 
   function _getId() {
-    return "animals_farm";
+    return "animals";
   }
 
   function _process(text) {

@@ -26,7 +26,7 @@ Repeated words score less points";
 
   this.getId = function()
   {
-    return "end_sound_" + this._soundName;
+    return "rhyme_" + this._soundName;
   }
 
   ModeManager.getInstance().register(this);
